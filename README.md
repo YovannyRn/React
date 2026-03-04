@@ -1,5 +1,7 @@
 # MediCore — Portal de Gestión
 
+> ## 🚀 [Ver Demo en vivo → react-projects-yovann.vercel.app](https://react-projects-yovann.vercel.app)
+
 Plataforma de gestión empresarial construida con React 19 como parte de las prácticas en **MediCore**. Integra un módulo de cotizaciones con comparativa inteligente, un CRM visual tipo Kanban, captación de clientes con IA y gestión de formularios.
 
 ---
@@ -111,8 +113,8 @@ Al iniciar la aplicación se muestra una pantalla de carga animada (átomo con e
 ## Instalación
 
 ```bash
-git clone https://github.com/YovannyRn/React.git
-cd React
+git clone https://github.com/YovannyRn/React-Projects.git
+cd React-Projects
 npm install
 npm start     # → http://localhost:3000
 ```
