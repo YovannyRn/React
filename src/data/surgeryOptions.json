@@ -1,0 +1,14 @@
+{
+  "surgeryOptions": [
+    { "value": "APPENDECTOMY", "label": "Appendectomy" },
+    { "value": "CESAREAN", "label": "Cesarean Section" },
+    { "value": "BY_PASS", "label": "Heart Bypass" },
+    { "value": "KNEE", "label": "Knee Replacement" },
+    { "value": "HIP", "label": "Hip Replacement" },
+    { "value": "TONSIL", "label": "Tonsillectomy" },
+    { "value": "GALLBLADDER", "label": "Gallbladder Removal" },
+    { "value": "HERNIA", "label": "Hernia Repair" },
+    { "value": "CATARACT", "label": "Cataract Surgery" },
+    { "value": "BREAST", "label": "Breast Augmentation" }
+  ]
+}

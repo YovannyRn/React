@@ -1,0 +1,14 @@
+{
+  "severities": [
+    { "id": "mild", "name": "Mild" },
+    { "id": "moderate", "name": "Moderate" },
+    { "id": "severe", "name": "Severe" },
+    { "id": "very_mild", "name": "Very Mild" },
+    { "id": "critical", "name": "Critical" },
+    { "id": "stable", "name": "Stable" },
+    { "id": "unstable", "name": "Unstable" },
+    { "id": "recovering", "name": "Recovering" },
+    { "id": "remission", "name": "Remission" },
+    { "id": "progressive", "name": "Progressive" }
+  ]
+}

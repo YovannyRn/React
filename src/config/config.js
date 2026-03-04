@@ -1,0 +1,1 @@
+export const ecosystemSlug = "LOBEES"; // Replace with your actual ecosystem slug

@@ -1,0 +1,14 @@
+{
+  "carePlanTypes": [
+    { "value": "preventive", "label": "Preventive Care Plan" },
+    { "value": "chronic_disease", "label": "Chronic Disease Management Plan" },
+    { "value": "post_surgical", "label": "Post-Surgical Recovery Plan" },
+    { "value": "rehabilitation", "label": "Rehabilitation Plan" },
+    { "value": "mental_health", "label": "Mental Health Support Plan" },
+    { "value": "palliative", "label": "Palliative Care Plan" },
+    { "value": "maternity", "label": "Maternity Care Plan" },
+    { "value": "pediatric", "label": "Pediatric Care Plan" },
+    { "value": "geriatric", "label": "Geriatric Care Plan" },
+    { "value": "oncology", "label": "Oncology Care Plan" }
+  ]
+}

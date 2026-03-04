@@ -1,0 +1,14 @@
+{
+  "treatmentPlans": [
+    { "value": "physical_therapy", "label": "Physical Therapy" },
+    { "value": "medication_management", "label": "Medication Management" },
+    { "value": "surgical_intervention", "label": "Surgical Intervention" },
+    { "value": "chemotherapy", "label": "Chemotherapy" },
+    { "value": "radiation_therapy", "label": "Radiation Therapy" },
+    { "value": "behavioral_therapy", "label": "Behavioral Therapy" },
+    { "value": "pain_management", "label": "Pain Management" },
+    { "value": "cardiac_rehabilitation", "label": "Cardiac Rehabilitation" },
+    { "value": "diabetes_management", "label": "Diabetes Management" },
+    { "value": "nutritional_counseling", "label": "Nutritional Counseling" }
+  ]
+}

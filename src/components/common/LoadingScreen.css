@@ -1,0 +1,249 @@
+/* ===== Loading Screen Overlay ===== */
+.loading-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background-color: #0d1117;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+
+.loading-overlay.fade-out {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+/* ===== Brand ===== */
+.loading-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.loading-brand-title {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    color: #ffffff;
+    font-family: "Segoe UI", system-ui, sans-serif;
+    text-transform: uppercase;
+}
+
+.loading-brand-title span {
+    color: #00ffff;
+}
+
+.loading-brand-subtitle {
+    font-size: 0.8rem;
+    letter-spacing: 0.25em;
+    color: #8b9ab0;
+    text-transform: uppercase;
+    font-family: "Segoe UI", system-ui, sans-serif;
+}
+
+/* ===== Atom Loader (from Uiverse.io by OMPRABHU8125) ===== */
+.loader {
+    height: 16rem;
+    width: 16rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.react-star {
+    position: relative;
+    width: 14rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 14rem;
+    animation: rotate 3s infinite;
+}
+
+.nucleus {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: linear-gradient(#0738e8, cyan);
+    height: 2rem;
+    width: 2rem;
+    animation: nucleusPulse 1s ease-in-out infinite;
+    box-shadow: 0 0 16px 4px #00ffffaa;
+}
+
+.electron {
+    position: absolute;
+    width: 14rem;
+    height: 5.5rem;
+    border-radius: 50%;
+    border: 0.25rem solid #00ffff;
+    animation: revolve 1s linear infinite;
+}
+
+.electron1::before,
+.electron2::before,
+.electron3::before {
+    content: "";
+    position: absolute;
+    top: 60%;
+    left: 100%;
+    transform: translate(-50%, -50%);
+    width: 0.9rem;
+    height: 0.9rem;
+    background-color: cyan;
+    border-radius: 50%;
+    box-shadow: 0 0 8px 2px cyan;
+    animation: moveElectron 1s linear infinite;
+}
+
+.electron2 {
+    transform: rotate(60deg);
+    animation-delay: -0.33s;
+}
+
+.electron2::before {
+    animation-delay: -0.33s;
+}
+
+.electron3 {
+    transform: rotate(-60deg);
+    animation-delay: -0.66s;
+}
+
+.electron3::before {
+    animation-delay: -0.66s;
+}
+
+/* ===== Loading bar ===== */
+.loading-bar-wrapper {
+    width: 14rem;
+    height: 3px;
+    background: #1e2a38;
+    border-radius: 99px;
+    overflow: hidden;
+}
+
+.loading-bar-fill {
+    height: 100%;
+    width: 40%;
+    background: linear-gradient(90deg, transparent, #00ffff, transparent);
+    border-radius: 99px;
+    animation: slidebar 1.4s ease-in-out infinite;
+}
+
+/* ===== Loading text ===== */
+.loading-text {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    color: #4a6480;
+    text-transform: uppercase;
+    font-family: "Segoe UI", system-ui, sans-serif;
+    animation: blink 1.4s ease-in-out infinite;
+}
+
+/* ===== Keyframes ===== */
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg) scale3d(1.05, 1.05, 0);
+    }
+}
+
+@keyframes nucleusPulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 12px 4px #00ffffaa;
+    }
+
+    50% {
+        box-shadow: 0 0 24px 8px #00ffff;
+    }
+}
+
+@keyframes revolve {
+    0% {
+        border-color: #00ffff9c;
+        border-right-color: transparent;
+    }
+
+    25% {
+        border-color: #00ffff9c;
+        border-bottom-color: transparent;
+    }
+
+    50% {
+        border-color: #00ffff9c;
+        border-left-color: transparent;
+    }
+
+    75% {
+        border-color: #00ffff9c;
+        border-top-color: transparent;
+    }
+
+    100% {
+        border-color: #00ffff9c;
+        border-right-color: transparent;
+    }
+}
+
+@keyframes moveElectron {
+    0% {
+        top: 60%;
+        left: 100%;
+    }
+
+    25% {
+        top: 100%;
+        left: 60%;
+    }
+
+    50% {
+        top: 60%;
+        left: 0%;
+    }
+
+    75% {
+        top: 0%;
+        left: 60%;
+    }
+
+    100% {
+        top: 60%;
+        left: 100%;
+    }
+}
+
+@keyframes slidebar {
+    0% {
+        transform: translateX(-200%);
+    }
+
+    100% {
+        transform: translateX(600%);
+    }
+}
+
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: 0.4;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}

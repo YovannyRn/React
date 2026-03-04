@@ -1,0 +1,311 @@
+{
+  "name": "MediCore - Calendly Integration",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Calendly: Appointment Scheduled",
+      "type": "n8n-nodes-base.calendlyTrigger",
+      "position": [100, 300],
+      "webhookId": "calendly-scheduled",
+      "typeVersion": 1,
+      "id": "calendly-trigger"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.invitee.email }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "name": "Check: Valid Email",
+      "type": "n8n-nodes-base.if",
+      "position": [300, 300],
+      "typeVersion": 1,
+      "id": "check-email"
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=http://localhost:5001/api/clientProcess/search/email/{{ $json.invitee.email }}",
+        "options": {}
+      },
+      "name": "Find Client by Email",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [500, 300],
+      "typeVersion": 4,
+      "id": "find-client"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.id }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "name": "Switch: Client Exists?",
+      "type": "n8n-nodes-base.if",
+      "position": [700, 300],
+      "typeVersion": 1,
+      "id": "client-exists-switch"
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "=http://localhost:5001/api/clientProcess/custom/kanban/{{ $('Find Client by Email').item.json.id }}",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "estado_kanban",
+              "value": "cita_agendada"
+            },
+            {
+              "name": "fecha_cita",
+              "value": "={{ $('Calendly: Appointment Scheduled').item.json.event.start_time }}"
+            },
+            {
+              "name": "hora_cita",
+              "value": "={{ $('Calendly: Appointment Scheduled').item.json.event.start_time }}"
+            },
+            {
+              "name": "calendly_event_uri",
+              "value": "={{ $('Calendly: Appointment Scheduled').item.json.event.uri }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Update: Appointment Scheduled",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [900, 200],
+      "typeVersion": 4,
+      "id": "update-appointment"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:5001/api/clientProcess",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "nombre",
+              "value": "={{ $('Calendly: Appointment Scheduled').item.json.invitee.name }}"
+            },
+            {
+              "name": "email",
+              "value": "={{ $('Calendly: Appointment Scheduled').item.json.invitee.email }}"
+            },
+            {
+              "name": "telefono",
+              "value": "={{ $('Calendly: Appointment Scheduled').item.json.invitee.text_reminder_number || 'No proporcionado' }}"
+            },
+            {
+              "name": "estado_kanban",
+              "value": "cita_agendada_directo"
+            },
+            {
+              "name": "fecha_cita",
+              "value": "={{ $('Calendly: Appointment Scheduled').item.json.event.start_time }}"
+            },
+            {
+              "name": "origen",
+              "value": "calendly_directo"
+            },
+            {
+              "name": "calendly_event_uri",
+              "value": "={{ $('Calendly: Appointment Scheduled').item.json.event.uri }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Create: New Client from Calendly",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [900, 400],
+      "typeVersion": 4,
+      "id": "create-client-calendly"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-3.5-turbo",
+          "mode": "list"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Genera un email de confirmación de cita para:\n\nCliente: {{ $('Calendly: Appointment Scheduled').item.json.invitee.name }}\nEmail: {{ $('Calendly: Appointment Scheduled').item.json.invitee.email }}\nFecha: {{ $('Calendly: Appointment Scheduled').item.json.event.start_time }}\nTipo de cita: {{ $('Calendly: Appointment Scheduled').item.json.event.name }}\n\nIncluye:\n1. Confirmación de la cita\n2. Preparación recomendada\n3. Información de contacto\n4. Recordatorio 24h antes\n\nTono: Profesional pero cálido"
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.7
+        }
+      },
+      "name": "AI: Generate Confirmation Message",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "position": [1100, 300],
+      "typeVersion": 1.4,
+      "id": "ai-confirmation"
+    },
+    {
+      "parameters": {
+        "fromEmail": "noreply@medicore.com",
+        "toEmail": "={{ $('Calendly: Appointment Scheduled').item.json.invitee.email }}",
+        "subject": "✅ Cita Confirmada - MediCore | {{ $('Calendly: Appointment Scheduled').item.json.event.start_time }}",
+        "emailFormat": "html",
+        "html": "=<!DOCTYPE html>\n<html>\n<head>\n    <meta charset=\"UTF-8\">\n    <title>Cita Confirmada - MediCore</title>\n    <style>\n        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }\n        .container { max-width: 600px; margin: 0 auto; padding: 20px; }\n        .header { background: #28a745; color: white; padding: 20px; text-align: center; border-radius: 10px 10px 0 0; }\n        .content { background: #f8f9fa; padding: 30px; border-radius: 0 0 10px 10px; }\n        .appointment-details { background: white; padding: 20px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #28a745; }\n        .cta-button { background: #007bff; color: white; padding: 12px 30px; text-decoration: none; border-radius: 25px; display: inline-block; margin: 20px 0; }\n        .footer { text-align: center; margin-top: 30px; color: #666; }\n    </style>\n</head>\n<body>\n    <div class=\"container\">\n        <div class=\"header\">\n            <h1>🎉 ¡Cita Confirmada!</h1>\n            <p>Tu consulta ha sido agendada exitosamente</p>\n        </div>\n        \n        <div class=\"content\">\n            <h2>Hola {{ $('Calendly: Appointment Scheduled').item.json.invitee.name }},</h2>\n            \n            <p>{{ $('AI: Generate Confirmation Message').item.json.choices[0].message.content }}</p>\n            \n            <div class=\"appointment-details\">\n                <h3>📅 Detalles de tu Cita</h3>\n                <p><strong>📆 Fecha y Hora:</strong> {{ $('Calendly: Appointment Scheduled').item.json.event.start_time }}</p>\n                <p><strong>⏱️ Duración:</strong> 30 minutos</p>\n                <p><strong>👤 Consultor:</strong> Equipo MediCore</p>\n                <p><strong>🎯 Tipo:</strong> {{ $('Calendly: Appointment Scheduled').item.json.event.name }}</p>\n            </div>\n            \n            <h3>📋 Preparación para la Cita:</h3>\n            <ul>\n                <li>Ten a mano los detalles de tu proyecto</li>\n                <li>Prepara preguntas específicas sobre tecnología</li>\n                <li>Considera tus objetivos y timeline</li>\n                <li>Ten disponible información sobre tu presupuesto</li>\n            </ul>\n            \n            <a href=\"{{ $('Calendly: Appointment Scheduled').item.json.event.uri }}\" class=\"cta-button\">📅 Ver Detalles en Calendly</a>\n            \n            <div class=\"footer\">\n                <p>🚀 <strong>MediCore - Tecnología que Transforma</strong></p>\n                <p>📧 Email: hola@medicore.com | 🌐 Web: medicore.com</p>\n                <p>💬 ¿Preguntas? Responde directamente a este email</p>\n            </div>\n        </div>\n    </div>\n</body>\n</html>",
+        "options": {}
+      },
+      "name": "Send: Appointment Confirmation",
+      "type": "n8n-nodes-base.emailSend",
+      "position": [1300, 300],
+      "typeVersion": 2,
+      "id": "send-confirmation"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:5001/api/notifications/internal",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "tipo",
+              "value": "nueva_cita"
+            },
+            {
+              "name": "cliente_nombre",
+              "value": "={{ $('Calendly: Appointment Scheduled').item.json.invitee.name }}"
+            },
+            {
+              "name": "cliente_email",
+              "value": "={{ $('Calendly: Appointment Scheduled').item.json.invitee.email }}"
+            },
+            {
+              "name": "fecha_cita",
+              "value": "={{ $('Calendly: Appointment Scheduled').item.json.event.start_time }}"
+            },
+            {
+              "name": "estado_anterior",
+              "value": "={{ $('Find Client by Email').item.json.estado_kanban || 'nuevo' }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Notify: Internal Team",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [1500, 300],
+      "typeVersion": 4,
+      "id": "notify-team"
+    }
+  ],
+  "connections": {
+    "Calendly: Appointment Scheduled": {
+      "main": [
+        [
+          {
+            "node": "Check: Valid Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check: Valid Email": {
+      "main": [
+        [
+          {
+            "node": "Find Client by Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Client by Email": {
+      "main": [
+        [
+          {
+            "node": "Switch: Client Exists?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch: Client Exists?": {
+      "main": [
+        [
+          {
+            "node": "Update: Appointment Scheduled",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create: New Client from Calendly",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update: Appointment Scheduled": {
+      "main": [
+        [
+          {
+            "node": "AI: Generate Confirmation Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create: New Client from Calendly": {
+      "main": [
+        [
+          {
+            "node": "AI: Generate Confirmation Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI: Generate Confirmation Message": {
+      "main": [
+        [
+          {
+            "node": "Send: Appointment Confirmation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send: Appointment Confirmation": {
+      "main": [
+        [
+          {
+            "node": "Notify: Internal Team",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "labTests": [
+    { "value": "cbc", "label": "Complete Blood Count (CBC)" },
+    { "value": "bmp", "label": "Basic Metabolic Panel (BMP)" },
+    { "value": "cmp", "label": "Comprehensive Metabolic Panel (CMP)" },
+    { "value": "lipid", "label": "Lipid Panel" },
+    { "value": "thyroid", "label": "Thyroid Function Test" },
+    { "value": "a1c", "label": "Hemoglobin A1C" },
+    { "value": "pt_inr", "label": "Prothrombin Time (PT/INR)" },
+    { "value": "urinalysis", "label": "Urinalysis" },
+    { "value": "crp", "label": "C-Reactive Protein (CRP)" },
+    { "value": "vitamin_d", "label": "Vitamin D Test" }
+  ]
+}

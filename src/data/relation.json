@@ -1,0 +1,14 @@
+{
+  "relation": [
+    { "id": "mother", "name": "Mother" },
+    { "id": "father", "name": "Father" },
+    { "id": "sibling", "name": "Sibling" },
+    { "id": "grandparent", "name": "Grandparent" },
+    { "id": "aunt", "name": "Aunt" },
+    { "id": "uncle", "name": "Uncle" },
+    { "id": "son", "name": "Son" },
+    { "id": "daughter", "name": "Daughter" },
+    { "id": "spouse", "name": "Spouse" },
+    { "id": "cousin", "name": "Cousin" }
+  ]
+}

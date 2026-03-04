@@ -1,0 +1,14 @@
+{
+  "educationLevelOptions": [
+    { "value": "NO_SCHOOL", "label": "No Formal Education" },
+    { "value": "PRIMARY", "label": "Primary School" },
+    { "value": "MIDDLE", "label": "Middle School" },
+    { "value": "HIGH", "label": "High School" },
+    { "value": "ASSOCIATE", "label": "Associate Degree" },
+    { "value": "BACHELOR", "label": "Bachelor’s Degree" },
+    { "value": "MASTER", "label": "Master’s Degree" },
+    { "value": "DOCTORATE", "label": "Doctorate" },
+    { "value": "PROFESSIONAL", "label": "Professional Certification" },
+    { "value": "OTHER", "label": "Other" }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "insuranceProviders": [
+    { "value": "blue_cross", "label": "Blue Cross Blue Shield" },
+    { "value": "aetna", "label": "Aetna" },
+    { "value": "cigna", "label": "Cigna" },
+    { "value": "humana", "label": "Humana" },
+    { "value": "united_health", "label": "UnitedHealthcare" },
+    { "value": "kaiser", "label": "Kaiser Permanente" },
+    { "value": "medicare", "label": "Medicare" },
+    { "value": "medicaid", "label": "Medicaid" },
+    { "value": "tricare", "label": "TRICARE" },
+    { "value": "ambetter", "label": "Ambetter" }
+  ]
+}

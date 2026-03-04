@@ -1,0 +1,15 @@
+{
+  "maritalStatusOptions": [
+    { "value": "SINGLE", "label": "Single" },
+    { "value": "MARRIED", "label": "Married" },
+    { "value": "DIVORCED", "label": "Divorced" },
+    { "value": "WIDOWED", "label": "Widowed" },
+    { "value": "SEPARATED", "label": "Separated" },
+    { "value": "PARTNERED", "label": "Domestic Partner" },
+    { "value": "ENGAGED", "label": "Engaged" },
+    { "value": "ANNULED", "label": "Annulled" },
+    { "value": "COHABITING", "label": "Cohabiting" },
+    { "value": "UNKNOWN", "label": "Unknown" }
+  ]
+}
+

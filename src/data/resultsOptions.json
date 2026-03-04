@@ -1,0 +1,14 @@
+{
+  "resultsOptions": [
+    { "id": 1, "name": "Normal" },
+    { "id": 2, "name": "Abnormal" },
+    { "id": 3, "name": "Pending" },
+    { "id": 4, "name": "Positive" },
+    { "id": 5, "name": "Negative" },
+    { "id": 6, "name": "Indeterminate" },
+    { "id": 7, "name": "Suspicious" },
+    { "id": 8, "name": "Critical" },
+    { "id": 9, "name": "Stable" },
+    { "id": 10, "name": "Under Observation" }
+  ]
+}

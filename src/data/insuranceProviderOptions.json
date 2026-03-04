@@ -1,0 +1,14 @@
+{
+  "insuranceProviderOptions": [
+    { "value": "AETNA", "label": "Aetna" },
+    { "value": "BLUE_CROSS", "label": "Blue Cross Blue Shield" },
+    { "value": "CIGNA", "label": "Cigna" },
+    { "value": "UNITED_HEALTH", "label": "UnitedHealthcare" },
+    { "value": "KAISER", "label": "Kaiser Permanente" },
+    { "value": "HUMANA", "label": "Humana" },
+    { "value": "MEDICARE", "label": "Medicare" },
+    { "value": "MEDICAID", "label": "Medicaid" },
+    { "value": "TRICARE", "label": "TRICARE" },
+    { "value": "MOLINA", "label": "Molina Healthcare" }
+  ]
+}

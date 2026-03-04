@@ -1,0 +1,14 @@
+{
+  "referredTo": [
+    { "value": "cardiologist", "label": "Cardiologist" },
+    { "value": "endocrinologist", "label": "Endocrinologist" },
+    { "value": "orthopedic_surgeon", "label": "Orthopedic Surgeon" },
+    { "value": "neurologist", "label": "Neurologist" },
+    { "value": "oncologist", "label": "Oncologist" },
+    { "value": "physical_therapist", "label": "Physical Therapist" },
+    { "value": "nutritionist", "label": "Nutritionist" },
+    { "value": "psychiatrist", "label": "Psychiatrist" },
+    { "value": "dermatologist", "label": "Dermatologist" },
+    { "value": "ophthalmologist", "label": "Ophthalmologist" }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "raceEthnicityOptions": [
+    { "value": "WHITE", "label": "White" },
+    { "value": "BLACK", "label": "Black or African American" },
+    { "value": "ASIAN", "label": "Asian" },
+    { "value": "HISPANIC", "label": "Hispanic or Latino" },
+    { "value": "NATIVE", "label": "Native American" },
+    { "value": "PACIFIC", "label": "Pacific Islander" },
+    { "value": "MIDDLE_EASTERN", "label": "Middle Eastern" },
+    { "value": "MULTIRACIAL", "label": "Multiracial" },
+    { "value": "OTHER", "label": "Other" },
+    { "value": "UNKNOWN", "label": "Unknown" }
+  ]
+}

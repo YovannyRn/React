@@ -1,0 +1,14 @@
+{
+  "allergyOptions": [
+    { "value": "PEANUTS", "label": "Peanuts" },
+    { "value": "DAIRY", "label": "Dairy" },
+    { "value": "SEAFOOD", "label": "Seafood" },
+    { "value": "SOY", "label": "Soy" },
+    { "value": "EGGS", "label": "Eggs" },
+    { "value": "POLLEN", "label": "Pollen" },
+    { "value": "DUST", "label": "Dust" },
+    { "value": "LATEX", "label": "Latex" },
+    { "value": "GLUTEN", "label": "Gluten" },
+    { "value": "MEDICATION", "label": "Medication" }
+  ]
+}

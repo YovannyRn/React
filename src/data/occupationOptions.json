@@ -1,0 +1,15 @@
+{
+  "occupationOptions": [
+    { "value": "TEACHER", "label": "Teacher" },
+    { "value": "ENGINEER", "label": "Engineer" },
+    { "value": "DOCTOR", "label": "Doctor" },
+    { "value": "LAWYER", "label": "Lawyer" },
+    { "value": "NURSE", "label": "Nurse" },
+    { "value": "ARTIST", "label": "Artist" },
+    { "value": "CHEF", "label": "Chef" },
+    { "value": "POLICE", "label": "Police Officer" },
+    { "value": "SCIENTIST", "label": "Scientist" },
+    { "value": "WRITER", "label": "Writer" }
+  ]
+}
+

@@ -1,0 +1,577 @@
+{
+  "name": "MediCore - Unified Client Management",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "/client-form-submission",
+        "responseMode": "responseNode",
+        "options": {
+          "neverError": true
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [100, 200],
+      "webhookId": "client-form-webhook",
+      "id": "webhook-form",
+      "name": "Webhook: Form Submission"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:5001/api/clientForm/create",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "cliente",
+              "value": "={{ $json.body.cliente }}"
+            },
+            {
+              "name": "nombre",
+              "value": "={{ $json.body.nombre }}"
+            },
+            {
+              "name": "email",
+              "value": "={{ $json.body.email }}"
+            },
+            {
+              "name": "telefono",
+              "value": "={{ $json.body.telefono }}"
+            },
+            {
+              "name": "empresa",
+              "value": "={{ $json.body.empresa }}"
+            },
+            {
+              "name": "servicio_solicitado",
+              "value": "={{ $json.body.servicio_solicitado }}"
+            },
+            {
+              "name": "descripcion_necesidad",
+              "value": "={{ $json.body.descripcion_necesidad }}"
+            },
+            {
+              "name": "tamaño_empresa",
+              "value": "={{ $json.body['tamaño_empresa'] }}"
+            },
+            {
+              "name": "presupuesto_estimado",
+              "value": "={{ $json.body.presupuesto_estimado }}"
+            },
+            {
+              "name": "fecha_envio",
+              "value": "={{ $json.body.fecha_envio }}"
+            },
+            {
+              "name": "sector",
+              "value": "={{ $json.body.sector }}"
+            }
+          ]
+        },
+        "options": {
+          "neverError": true
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [300, 200],
+      "id": "create-client-form",
+      "name": "Create: Form Data"
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "=http://localhost:5001/api/clientProcess/custom/kanban/{{ $json.body.cliente }}",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "estado_kanban",
+              "value": "formulario_recibido"
+            },
+            {
+              "name": "fecha_formulario",
+              "value": "={{ $now }}"
+            }
+          ]
+        },
+        "options": {
+          "neverError": true
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [500, 200],
+      "id": "update-form-status",
+      "name": "Update: Form Status"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-3.5-turbo",
+          "mode": "list"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Genera un email de seguimiento personalizado para:\n\nCliente: {{ $('Create: Form Data').item.json.data.nombre }}\nEmpresa: {{ $('Create: Form Data').item.json.data.empresa }}\nServicio: {{ $('Create: Form Data').item.json.data.servicio_solicitado }}\nPresupuesto: {{ $('Create: Form Data').item.json.data.presupuesto_estimado }}\nDescripción: {{ $('Create: Form Data').item.json.data.descripcion_necesidad }}\n\nGenera un mensaje que:\n1. Agradezca su interés\n2. Resuma su solicitud\n3. Invite a agendar consulta\n4. Sea profesional pero cálido\n\nTono: Profesional, personalizado y orientado a resultados"
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.7,
+          "neverError": true
+        }
+      },
+      "name": "AI: Generate Follow-up Message",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "position": [700, 200],
+      "typeVersion": 1.4,
+      "id": "ai-followup",
+      "credentials": {
+        "openAiApi": {
+          "id": "oBodgJefKt6b8EvJ",
+          "name": "OpenAi account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "hola@medicore.com",
+        "toEmail": "={{ $('Create: Form Data').item.json.data.email }}",
+        "subject": "🚀 Tu consulta ha sido recibida - Siguiente paso: Agendar consulta GRATUITA",
+        "emailFormat": "html",
+        "html": "=<!DOCTYPE html>\n<html lang=\"es\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Consulta Recibida - MediCore</title>\n    <style>\n        body { font-family: 'Arial', sans-serif; line-height: 1.6; color: #333; background: #f8f9fa; margin: 0; padding: 0; }\n        .container { max-width: 600px; margin: 0 auto; background: white; }\n        .header { background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; padding: 30px 20px; text-align: center; }\n        .header h1 { font-size: 24px; margin: 0 0 10px 0; }\n        .content { padding: 30px 20px; }\n        .client-info { background: #f8f9fa; padding: 20px; border-radius: 10px; border-left: 4px solid #28a745; margin: 20px 0; }\n        .ai-message { background: #e3f2fd; padding: 20px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #2196f3; }\n        .cta-section { background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%); color: white; padding: 40px 20px; text-align: center; }\n        .cta-button { display: inline-block; background: white; color: #ff6b6b; padding: 18px 40px; text-decoration: none; border-radius: 50px; font-weight: bold; font-size: 18px; margin: 20px 0; }\n        .footer { background: #333; color: white; padding: 30px 20px; text-align: center; }\n        .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; }\n        .info-item { background: white; padding: 15px; border-radius: 8px; }\n        .info-item strong { color: #28a745; display: block; margin-bottom: 5px; }\n        @media (max-width: 600px) { .info-grid { grid-template-columns: 1fr; } }\n    </style>\n</head>\n<body>\n    <div class=\"container\">\n        <div class=\"header\">\n            <h1>✅ ¡Consulta Recibida!</h1>\n            <p>Tu solicitud está siendo analizada por nuestro equipo</p>\n        </div>\n        \n        <div class=\"content\">\n            <h2>Hola {{ $('Create: Form Data').item.json.data.nombre }},</h2>\n            \n            <div class=\"ai-message\">\n                <h3>💡 Mensaje Personalizado</h3>\n                <p>{{ $('AI: Generate Follow-up Message').item.json.choices[0].message.content }}</p>\n            </div>\n            \n            <div class=\"client-info\">\n                <h3>📋 Resumen de tu Solicitud</h3>\n                <div class=\"info-grid\">\n                    <div class=\"info-item\">\n                        <strong>🏢 Empresa</strong>\n                        <span>{{ $('Create: Form Data').item.json.data.empresa }}</span>\n                    </div>\n                    <div class=\"info-item\">\n                        <strong>⚙️ Servicio</strong>\n                        <span>{{ $('Create: Form Data').item.json.data.servicio_solicitado }}</span>\n                    </div>\n                    <div class=\"info-item\">\n                        <strong>💰 Presupuesto</strong>\n                        <span>{{ $('Create: Form Data').item.json.data.presupuesto_estimado }}</span>\n                    </div>\n                    <div class=\"info-item\">\n                        <strong>📞 Contacto</strong>\n                        <span>{{ $('Create: Form Data').item.json.data.telefono }}</span>\n                    </div>\n                </div>\n            </div>\n        </div>\n        \n        <div class=\"cta-section\">\n            <h2>🗓️ ¡Agenda tu Consulta GRATUITA!</h2>\n            <p>30 minutos con nuestro experto para revisar tu proyecto y crear una estrategia personalizada</p>\n            <a href=\"https://calendly.com/yovannyn30\" class=\"cta-button\">\n                📅 Agendar Consulta Ahora\n            </a>\n            <div style=\"margin-top: 20px;\">\n                <small>✅ 100% Gratuito • ✅ Sin compromiso • ✅ Propuesta incluida</small>\n            </div>\n        </div>\n        \n        <div class=\"footer\">\n            <h4>🚀 MediCore - Tecnología que Transforma</h4>\n            <p>📧 hola@medicore.com | 🌐 medicore.com</p>\n            <p>💬 ¿Preguntas? Responde este email</p>\n        </div>\n    </div>\n</body>\n</html>",
+        "options": {
+          "neverError": true
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [900, 200],
+      "id": "send-followup-email",
+      "name": "Send: Follow-up Email",
+      "credentials": {
+        "smtp": {
+          "id": "eRGxFifvNn8ZYixd",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"success\": true,\n  \"message\": \"Formulario procesado exitosamente\",\n  \"client_id\": \"{{ $('Create: Form Data').item.json.data.cliente }}\",\n  \"status\": \"formulario_recibido\",\n  \"next_step\": \"Agenda tu consulta en https://calendly.com/yovannyn30\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1100, 200],
+      "id": "respond-form",
+      "name": "Respond: Form Success"
+    },
+    {
+      "parameters": {},
+      "name": "Calendly: Appointment Scheduled",
+      "type": "n8n-nodes-base.calendlyTrigger",
+      "position": [100, 600],
+      "webhookId": "calendly-appointments",
+      "typeVersion": 1,
+      "id": "calendly-trigger"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.invitee.email }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "name": "Check: Valid Email",
+      "type": "n8n-nodes-base.if",
+      "position": [300, 600],
+      "typeVersion": 1,
+      "id": "check-email"
+    },
+    {
+      "parameters": {
+        "url": "=http://localhost:5001/api/clientProcess/search/email/{{ $json.invitee.email }}",
+        "options": {
+          "neverError": true
+        }
+      },
+      "name": "Find: Client by Email",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [500, 600],
+      "typeVersion": 4,
+      "id": "find-client"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.id }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "name": "Switch: Client Exists?",
+      "type": "n8n-nodes-base.if",
+      "position": [700, 600],
+      "typeVersion": 1,
+      "id": "client-exists"
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "=http://localhost:5001/api/clientProcess/custom/kanban/{{ $('Find: Client by Email').item.json.id }}",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "estado_kanban",
+              "value": "cita_agendada"
+            },
+            {
+              "name": "fecha_cita",
+              "value": "={{ $('Calendly: Appointment Scheduled').item.json.event.start_time }}"
+            },
+            {
+              "name": "calendly_event_uri",
+              "value": "={{ $('Calendly: Appointment Scheduled').item.json.event.uri }}"
+            },
+            {
+              "name": "calendly_meeting_url",
+              "value": "={{ $('Calendly: Appointment Scheduled').item.json.event.location.join_url || $('Calendly: Appointment Scheduled').item.json.event.uri }}"
+            }
+          ]
+        },
+        "options": {
+          "neverError": true
+        }
+      },
+      "name": "Update: Existing Client → Cita Agendada",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [900, 500],
+      "typeVersion": 4,
+      "id": "update-existing-client"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:5001/api/clientProcess",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "nombre",
+              "value": "={{ $('Calendly: Appointment Scheduled').item.json.invitee.name }}"
+            },
+            {
+              "name": "email",
+              "value": "={{ $('Calendly: Appointment Scheduled').item.json.invitee.email }}"
+            },
+            {
+              "name": "telefono",
+              "value": "={{ $('Calendly: Appointment Scheduled').item.json.invitee.text_reminder_number || 'No proporcionado' }}"
+            },
+            {
+              "name": "estado_kanban",
+              "value": "cita_agendada_directo"
+            },
+            {
+              "name": "fecha_cita",
+              "value": "={{ $('Calendly: Appointment Scheduled').item.json.event.start_time }}"
+            },
+            {
+              "name": "origen",
+              "value": "calendly_directo"
+            },
+            {
+              "name": "calendly_event_uri",
+              "value": "={{ $('Calendly: Appointment Scheduled').item.json.event.uri }}"
+            },
+            {
+              "name": "calendly_meeting_url",
+              "value": "={{ $('Calendly: Appointment Scheduled').item.json.event.location.join_url || $('Calendly: Appointment Scheduled').item.json.event.uri }}"
+            }
+          ]
+        },
+        "options": {
+          "neverError": true
+        }
+      },
+      "name": "Create: New Client → Cita Agendada Directo",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [900, 700],
+      "typeVersion": 4,
+      "id": "create-new-client"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-3.5-turbo",
+          "mode": "list"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Genera un email de confirmación de cita personalizado para:\n\nCliente: {{ $('Calendly: Appointment Scheduled').item.json.invitee.name }}\nEmail: {{ $('Calendly: Appointment Scheduled').item.json.invitee.email }}\nFecha: {{ $('Calendly: Appointment Scheduled').item.json.event.start_time }}\nTipo de cita: {{ $('Calendly: Appointment Scheduled').item.json.event.name }}\nEstado anterior: {{ $('Find: Client by Email').item.json.estado_kanban || 'Cliente nuevo directo de Calendly' }}\n\nIncluye:\n1. Confirmación entusiasta de la cita\n2. Qué preparar para la reunión\n3. Información de acceso/ubicación\n4. Expectativas claras del meeting\n\nTono: Profesional, entusiasta y orientado a resultados"
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.7,
+          "neverError": true
+        }
+      },
+      "name": "AI: Generate Appointment Confirmation",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "position": [1100, 600],
+      "typeVersion": 1.4,
+      "id": "ai-confirmation",
+      "credentials": {
+        "openAiApi": {
+          "id": "oBodgJefKt6b8EvJ",
+          "name": "OpenAi account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "hola@medicore.com",
+        "toEmail": "={{ $('Calendly: Appointment Scheduled').item.json.invitee.email }}",
+        "subject": "✅ Cita Confirmada - MediCore | {{ $('Calendly: Appointment Scheduled').item.json.event.start_time | date('DD/MM/YYYY HH:mm') }}",
+        "emailFormat": "html",
+        "html": "=<!DOCTYPE html>\n<html>\n<head>\n    <meta charset=\"UTF-8\">\n    <title>Cita Confirmada - MediCore</title>\n    <style>\n        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; background: #f8f9fa; margin: 0; padding: 0; }\n        .container { max-width: 600px; margin: 0 auto; background: white; }\n        .header { background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; padding: 30px 20px; text-align: center; }\n        .content { padding: 30px 20px; }\n        .appointment-details { background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #28a745; }\n        .preparation { background: #e3f2fd; padding: 20px; border-radius: 10px; margin: 20px 0; }\n        .cta-button { background: #007bff; color: white; padding: 15px 30px; text-decoration: none; border-radius: 25px; display: inline-block; margin: 20px 0; font-weight: bold; }\n        .footer { background: #333; color: white; padding: 30px 20px; text-align: center; }\n        .status-badge { background: #28a745; color: white; padding: 8px 15px; border-radius: 20px; font-size: 12px; display: inline-block; margin: 10px 0; }\n    </style>\n</head>\n<body>\n    <div class=\"container\">\n        <div class=\"header\">\n            <h1>🎉 ¡Cita Confirmada!</h1>\n            <p>Tu consulta ha sido agendada exitosamente</p>\n            <div class=\"status-badge\">Estado: {{ $('Find: Client by Email').item.json.estado_kanban || 'Cliente Nuevo' }}</div>\n        </div>\n        \n        <div class=\"content\">\n            <h2>Hola {{ $('Calendly: Appointment Scheduled').item.json.invitee.name }},</h2>\n            \n            <div class=\"preparation\">\n                <h3>💡 Mensaje Personalizado</h3>\n                <p>{{ $('AI: Generate Appointment Confirmation').item.json.choices[0].message.content }}</p>\n            </div>\n            \n            <div class=\"appointment-details\">\n                <h3>📅 Detalles de tu Cita</h3>\n                <p><strong>📆 Fecha y Hora:</strong> {{ $('Calendly: Appointment Scheduled').item.json.event.start_time | date('dddd, DD [de] MMMM [de] YYYY [a las] HH:mm') }}</p>\n                <p><strong>⏱️ Duración:</strong> 30 minutos</p>\n                <p><strong>👤 Consultor:</strong> Equipo MediCore</p>\n                <p><strong>🎯 Tipo:</strong> {{ $('Calendly: Appointment Scheduled').item.json.event.name }}</p>\n                {{ $('Calendly: Appointment Scheduled').item.json.event.location.join_url ? '<p><strong>🔗 Enlace de Reunión:</strong> <a href=\"' + $('Calendly: Appointment Scheduled').item.json.event.location.join_url + '\">Unirse a la reunión</a></p>' : '' }}\n            </div>\n            \n            <div class=\"preparation\">\n                <h3>📋 Preparación Recomendada:</h3>\n                <ul>\n                    <li>✅ Ten a mano los detalles específicos de tu proyecto</li>\n                    <li>✅ Prepara preguntas sobre tecnología y implementación</li>\n                    <li>✅ Define tus objetivos y timeline esperado</li>\n                    <li>✅ Ten clara la información sobre presupuesto disponible</li>\n                    <li>✅ Piensa en los resultados que esperas obtener</li>\n                </ul>\n            </div>\n            \n            <div style=\"text-align: center;\">\n                <a href=\"{{ $('Calendly: Appointment Scheduled').item.json.event.uri }}\" class=\"cta-button\">\n                    📅 Ver Detalles en Calendly\n                </a>\n            </div>\n        </div>\n        \n        <div class=\"footer\">\n            <h4>🚀 MediCore - Tecnología que Transforma</h4>\n            <p>📧 Email: hola@medicore.com | 🌐 Web: medicore.com</p>\n            <p>💬 ¿Preguntas? Responde directamente a este email</p>\n            <div style=\"margin-top: 20px; font-size: 12px; opacity: 0.8;\">\n                <p>Nos vemos pronto. ¡Estamos emocionados de trabajar contigo! 🚀</p>\n            </div>\n        </div>\n    </div>\n</body>\n</html>",
+        "options": {
+          "neverError": true
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [1300, 600],
+      "id": "send-appointment-confirmation",
+      "name": "Send: Appointment Confirmation",
+      "credentials": {
+        "smtp": {
+          "id": "eRGxFifvNn8ZYixd",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:5001/api/notifications/internal",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "tipo",
+              "value": "cita_agendada"
+            },
+            {
+              "name": "cliente_nombre",
+              "value": "={{ $('Calendly: Appointment Scheduled').item.json.invitee.name }}"
+            },
+            {
+              "name": "cliente_email",
+              "value": "={{ $('Calendly: Appointment Scheduled').item.json.invitee.email }}"
+            },
+            {
+              "name": "fecha_cita",
+              "value": "={{ $('Calendly: Appointment Scheduled').item.json.event.start_time }}"
+            },
+            {
+              "name": "estado_anterior",
+              "value": "={{ $('Find: Client by Email').item.json.estado_kanban || 'nuevo_cliente_directo' }}"
+            },
+            {
+              "name": "client_id",
+              "value": "={{ $('Find: Client by Email').item.json.id || $('Create: New Client → Cita Agendada Directo').item.json.data.id }}"
+            },
+            {
+              "name": "transicion",
+              "value": "={{ $('Find: Client by Email').item.json.estado_kanban ? 'formulario_recibido → cita_agendada' : 'nuevo → cita_agendada_directo' }}"
+            }
+          ]
+        },
+        "options": {
+          "neverError": true
+        }
+      },
+      "name": "Notify: Internal Team",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [1500, 600],
+      "typeVersion": 4,
+      "id": "notify-team"
+    }
+  ],
+  "connections": {
+    "Webhook: Form Submission": {
+      "main": [
+        [
+          {
+            "node": "Create: Form Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create: Form Data": {
+      "main": [
+        [
+          {
+            "node": "Update: Form Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update: Form Status": {
+      "main": [
+        [
+          {
+            "node": "AI: Generate Follow-up Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI: Generate Follow-up Message": {
+      "main": [
+        [
+          {
+            "node": "Send: Follow-up Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send: Follow-up Email": {
+      "main": [
+        [
+          {
+            "node": "Respond: Form Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calendly: Appointment Scheduled": {
+      "main": [
+        [
+          {
+            "node": "Check: Valid Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check: Valid Email": {
+      "main": [
+        [
+          {
+            "node": "Find: Client by Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find: Client by Email": {
+      "main": [
+        [
+          {
+            "node": "Switch: Client Exists?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch: Client Exists?": {
+      "main": [
+        [
+          {
+            "node": "Update: Existing Client → Cita Agendada",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create: New Client → Cita Agendada Directo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update: Existing Client → Cita Agendada": {
+      "main": [
+        [
+          {
+            "node": "AI: Generate Appointment Confirmation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create: New Client → Cita Agendada Directo": {
+      "main": [
+        [
+          {
+            "node": "AI: Generate Appointment Confirmation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI: Generate Appointment Confirmation": {
+      "main": [
+        [
+          {
+            "node": "Send: Appointment Confirmation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send: Appointment Confirmation": {
+      "main": [
+        [
+          {
+            "node": "Notify: Internal Team",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d1ab635493efb7984db0830b25ac7ac580f8c8c4ff77df153b8ab93f6e6757a1"
+  }
+}

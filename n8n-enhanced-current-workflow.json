@@ -1,0 +1,223 @@
+{
+  "name": "MediCore - Enhanced Form + Calendly Workflow",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Calendly: Appointment Scheduled",
+      "type": "n8n-nodes-base.calendlyTrigger",
+      "position": [100, 800],
+      "webhookId": "calendly-appointments",
+      "typeVersion": 1,
+      "id": "calendly-trigger"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.invitee.email }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "name": "Check: Valid Email",
+      "type": "n8n-nodes-base.if",
+      "position": [300, 800],
+      "typeVersion": 1,
+      "id": "check-email"
+    },
+    {
+      "parameters": {
+        "url": "=http://localhost:5001/api/clientProcess/search/email/{{ $json.invitee.email }}",
+        "options": {
+          "neverError": true
+        }
+      },
+      "name": "Find: Client by Email",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [500, 800],
+      "typeVersion": 4,
+      "id": "find-client"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.id }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "name": "Switch: Client Exists?",
+      "type": "n8n-nodes-base.if",
+      "position": [700, 800],
+      "typeVersion": 1,
+      "id": "client-exists"
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "=http://localhost:5001/api/clientProcess/custom/kanban/{{ $('Find: Client by Email').item.json.id }}",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "estado_kanban",
+              "value": "cita_agendada"
+            },
+            {
+              "name": "fecha_cita",
+              "value": "={{ $('Calendly: Appointment Scheduled').item.json.event.start_time }}"
+            },
+            {
+              "name": "calendly_event_uri",
+              "value": "={{ $('Calendly: Appointment Scheduled').item.json.event.uri }}"
+            }
+          ]
+        },
+        "options": {
+          "neverError": true
+        }
+      },
+      "name": "Update: Client → Cita Agendada",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [900, 700],
+      "typeVersion": 4,
+      "id": "update-existing-client"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:5001/api/clientProcess",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "nombre",
+              "value": "={{ $('Calendly: Appointment Scheduled').item.json.invitee.name }}"
+            },
+            {
+              "name": "email",
+              "value": "={{ $('Calendly: Appointment Scheduled').item.json.invitee.email }}"
+            },
+            {
+              "name": "estado_kanban",
+              "value": "cita_agendada_directo"
+            },
+            {
+              "name": "fecha_cita",
+              "value": "={{ $('Calendly: Appointment Scheduled').item.json.event.start_time }}"
+            },
+            {
+              "name": "origen",
+              "value": "calendly_directo"
+            }
+          ]
+        },
+        "options": {
+          "neverError": true
+        }
+      },
+      "name": "Create: New Client from Calendly",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [900, 900],
+      "typeVersion": 4,
+      "id": "create-new-client"
+    },
+    {
+      "parameters": {
+        "fromEmail": "yovanny.dev@gmail.com",
+        "toEmail": "={{ $('Calendly: Appointment Scheduled').item.json.invitee.email }}",
+        "subject": "✅ Cita Confirmada - MediCore | {{ $('Calendly: Appointment Scheduled').item.json.event.start_time | date('DD/MM/YYYY HH:mm') }}",
+        "emailFormat": "html",
+        "html": "<!-- NUEVO HTML PARA CONFIRMACIÓN DE CITA -->",
+        "options": {
+          "neverError": true
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [1100, 800],
+      "id": "send-appointment-confirmation",
+      "name": "Send: Appointment Confirmation"
+    }
+  ],
+  "connections": {
+    "Calendly: Appointment Scheduled": {
+      "main": [
+        [
+          {
+            "node": "Check: Valid Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check: Valid Email": {
+      "main": [
+        [
+          {
+            "node": "Find: Client by Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find: Client by Email": {
+      "main": [
+        [
+          {
+            "node": "Switch: Client Exists?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch: Client Exists?": {
+      "main": [
+        [
+          {
+            "node": "Update: Client → Cita Agendada",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create: New Client from Calendly",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update: Client → Cita Agendada": {
+      "main": [
+        [
+          {
+            "node": "Send: Appointment Confirmation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create: New Client from Calendly": {
+      "main": [
+        [
+          {
+            "node": "Send: Appointment Confirmation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

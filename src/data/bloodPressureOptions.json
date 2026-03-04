@@ -1,0 +1,14 @@
+{
+  "bloodPressureOptions": [
+    { "value": "NORMAL", "label": "Normal" },
+    { "value": "LOW", "label": "Low" },
+    { "value": "HIGH", "label": "High" },
+    { "value": "HYPERTENSION_STAGE1", "label": "Hypertension Stage 1" },
+    { "value": "HYPERTENSION_STAGE2", "label": "Hypertension Stage 2" },
+    { "value": "HYPERTENSIVE_CRISIS", "label": "Hypertensive Crisis" },
+    { "value": "PREHYPERTENSION", "label": "Prehypertension" },
+    { "value": "WHITE_COAT", "label": "White Coat Hypertension" },
+    { "value": "MASKED", "label": "Masked Hypertension" },
+    { "value": "ORTHOSTATIC", "label": "Orthostatic Hypotension" }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "cityOptions": [
+    { "value": "NYC", "label": "New York City" },
+    { "value": "LAX", "label": "Los Angeles" },
+    { "value": "CHI", "label": "Chicago" },
+    { "value": "HOU", "label": "Houston" },
+    { "value": "PHX", "label": "Phoenix" },
+    { "value": "PHI", "label": "Philadelphia" },
+    { "value": "SAT", "label": "San Antonio" },
+    { "value": "SDG", "label": "San Diego" },
+    { "value": "DAL", "label": "Dallas" },
+    { "value": "AU", "label": "Austin" }
+  ]
+}

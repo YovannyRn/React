@@ -1,0 +1,14 @@
+{
+  "followUpReasons": [
+    { "value": "routine_checkup", "label": "Routine Check-up" },
+    { "value": "medication_adjustment", "label": "Medication Adjustment" },
+    { "value": "lab_test_review", "label": "Lab Test Review" },
+    { "value": "post_surgery_evaluation", "label": "Post-Surgery Evaluation" },
+    { "value": "chronic_disease_monitoring", "label": "Chronic Disease Monitoring" },
+    { "value": "treatment_progress", "label": "Treatment Progress" },
+    { "value": "new_symptoms", "label": "New Symptoms" },
+    { "value": "mental_health_assessment", "label": "Mental Health Assessment" },
+    { "value": "therapy_follow_up", "label": "Therapy Follow-Up" },
+    { "value": "specialist_referral", "label": "Specialist Referral" }
+  ]
+}

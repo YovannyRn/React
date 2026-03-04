@@ -1,0 +1,24 @@
+{
+  "specialities": [
+    { "slug": "cardiology", "value": "Cardiology" },
+    { "slug": "ent", "value": "ENT (Ear, Nose, Throat)" },
+    { "slug": "neurology", "value": "Neurology" },
+    { "slug": "dermatology", "value": "Dermatology" },
+    { "slug": "pediatrics", "value": "Pediatrics" },
+    { "slug": "orthopedics", "value": "Orthopedics" },
+    { "slug": "gynecology", "value": "Gynecology" },
+    { "slug": "psychiatry", "value": "Psychiatry" },
+    { "slug": "dental", "value": "Dental" },
+    { "slug": "urology", "value": "Urology" },
+    { "slug": "endocrinology", "value": "Endocrinology" },
+    { "slug": "gastroenterology", "value": "Gastroenterology" },
+    { "slug": "oncology", "value": "Oncology" },
+    { "slug": "pulmonology", "value": "Pulmonology" },
+    { "slug": "rheumatology", "value": "Rheumatology" },
+    { "slug": "nephrology", "value": "Nephrology" },
+    { "slug": "general-medicine", "value": "General Medicine" },
+    { "slug": "general-surgery", "value": "General Surgery" },
+    { "slug": "family-medicine", "value": "Family Medicine" },
+    { "slug": "ophthalmology", "value": "Ophthalmology" }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "carePlans": [
+    { "value": "diabetes_management", "label": "Diabetes Management Plan" },
+    { "value": "hypertension_control", "label": "Hypertension Control Plan" },
+    { "value": "post_heart_surgery", "label": "Post-Heart Surgery Recovery Plan" },
+    { "value": "physical_therapy", "label": "Physical Therapy Plan" },
+    { "value": "mental_wellness", "label": "Mental Wellness Program" },
+    { "value": "cancer_treatment", "label": "Cancer Treatment Plan" },
+    { "value": "weight_loss", "label": "Weight Loss and Nutrition Plan" },
+    { "value": "pregnancy_care", "label": "Pregnancy Care Plan" },
+    { "value": "palliative_care", "label": "Palliative Care Program" },
+    { "value": "rehabilitation", "label": "Rehabilitation and Recovery Plan" }
+  ]
+}

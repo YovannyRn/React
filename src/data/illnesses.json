@@ -1,0 +1,14 @@
+{
+  "illnesses": [
+    { "value": "diabetes", "label": "Diabetes" },
+    { "value": "hypertension", "label": "Hypertension" },
+    { "value": "asthma", "label": "Asthma" },
+    { "value": "heart_disease", "label": "Heart Disease" },
+    { "value": "arthritis", "label": "Arthritis" },
+    { "value": "stroke", "label": "Stroke" },
+    { "value": "cancer", "label": "Cancer" },
+    { "value": "chronic_kidney_disease", "label": "Chronic Kidney Disease" },
+    { "value": "alzheimer", "label": "Alzheimer's Disease" },
+    { "value": "depression", "label": "Depression" }
+  ]
+}

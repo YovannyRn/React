@@ -1,0 +1,10 @@
+{
+  "languageOptions": [
+    { "value": "ENG", "label": "English" },
+    { "value": "ESP", "label": "Spanish" },
+    { "value": "FRA", "label": "French" },
+    { "value": "DEU", "label": "German" },
+    { "value": "ZHO", "label": "Chinese" },
+    { "value": "ARA", "label": "Arabic" }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "conditions": [
+    { "id": "1", "name": "Diabetes" },
+    { "id": "2", "name": "Hypertension" },
+    { "id": "3", "name": "Asthma" },
+    { "id": "4", "name": "Arthritis" },
+    { "id": "5", "name": "Cancer" },
+    { "id": "6", "name": "Heart Disease" },
+    { "id": "7", "name": "Chronic Kidney Disease" },
+    { "id": "8", "name": "Stroke" },
+    { "id": "9", "name": "Alzheimer's" },
+    { "id": "10", "name": "Epilepsy" }
+  ]
+}
