@@ -1,13 +1,6 @@
 import React, { useState } from "react";
 import { Modal, Button, Form, Row, Col, Alert, Spinner } from "react-bootstrap";
-import {
-  FaUser,
-  FaBuilding,
-  FaEnvelope,
-  FaPhone,
-  FaCogs,
-  FaFileAlt,
-} from "react-icons/fa";
+import { FaUser, FaBuilding, FaCogs, FaFileAlt } from "react-icons/fa";
 import clientFormService from "../services/ClientFormService";
 import clientProcessService from "../services/ClientProcessService";
 

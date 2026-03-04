@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Modal, Button, Form, Row, Col } from "react-bootstrap";
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import CloseIcon from '@mui/icons-material/Close';
-import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import CloseIcon from "@mui/icons-material/Close";
+import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 
 const initialState = {
   quotationNumber: "",
@@ -23,7 +23,13 @@ const initialState = {
 };
 
 const statusOptions = [
-  "Draft", "Sent", "Received", "Under Review", "Accepted", "Rejected", "Expired"
+  "Draft",
+  "Sent",
+  "Received",
+  "Under Review",
+  "Accepted",
+  "Rejected",
+  "Expired",
 ];
 const currencyOptions = ["USD", "EUR", "GBP", "MXN", "JPY"];
 
@@ -31,95 +37,133 @@ const NewQuotation = ({ show, onClose, onCreateQuotation }) => {
   const [form, setForm] = useState(initialState);
   const [loading, setLoading] = useState(false);
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setForm(prev => ({
+    setForm((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
   const [items, setItems] = useState([
-    { description: "", quantity: 1, unitPrice: "", taxes: "", totalPrice: "" }
+    { description: "", quantity: 1, unitPrice: "", taxes: "", totalPrice: "" },
   ]);
 
   const handleItemChange = (idx, e) => {
     const { name, value } = e.target;
-    setItems(prev =>
-      prev.map((item, i) =>
-        i === idx ? { ...item, [name]: value } : item
-      )
+    setItems((prev) =>
+      prev.map((item, i) => (i === idx ? { ...item, [name]: value } : item)),
     );
   };
 
   const addItem = () => {
-    setItems([...items, { description: "", quantity: 1, unitPrice: "", taxes: "", totalPrice: "" }]);
+    setItems([
+      ...items,
+      {
+        description: "",
+        quantity: 1,
+        unitPrice: "",
+        taxes: "",
+        totalPrice: "",
+      },
+    ]);
   };
 
   const removeItem = (idx) => {
     setItems(items.filter((_, i) => i !== idx));
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  setLoading(true);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
 
-  const validObjectId = (id) => typeof id === "string" && id.length === 24 && /^[a-fA-F0-9]+$/.test(id);
+    const validObjectId = (id) =>
+      typeof id === "string" && id.length === 24 && /^[a-fA-F0-9]+$/.test(id);
 
-  const dummyObjectId = () => Math.floor(Math.random()*1e16).toString(16).padStart(24, 'a');
+    const dummyObjectId = () =>
+      Math.floor(Math.random() * 1e16)
+        .toString(16)
+        .padStart(24, "a");
 
-  const DEFAULT_OBJECT_ID = "6650e2132321312312312312"; 
-  
-  const newQuotation = {
-    ...form,
-    id: Math.random().toString(36).substr(2, 9),
-    quotationNumber: form.quotationNumber || `Q-${Math.floor(Math.random()*10000)}`,
-    quotationRequestId: validObjectId(form.quotationRequestId) ? form.quotationRequestId : DEFAULT_OBJECT_ID,
-    supplierId: validObjectId(form.supplierId) ? form.supplierId : DEFAULT_OBJECT_ID,
-    responsibleId: validObjectId(form.responsibleId) ? form.responsibleId : DEFAULT_OBJECT_ID,
-    supplierName: form.supplierName || "Proveedor X",
-    status: form.status || "Draft",
-    totalAmount: { $numberDecimal: String(form.totalAmount || "0") },
-    currency: form.currency || "USD",
-    deliveryTime: Number(form.deliveryTime) || 0,
-    deliveryTerms: form.deliveryTerms || "",
-    paymentTerms: form.paymentTerms || "",
-    validUntil: form.validUntil ? new Date(form.validUntil).toISOString() : new Date(Date.now() + 7*24*60*60*1000).toISOString(),
-    creationDate: new Date().toISOString(),
-    sentDate: null,
-    receivedDate: null,
-    reviewDate: null,
-    items: (items.length ? items : [{ description: "", quantity: 1, unitPrice: "0", taxes: "0", totalPrice: "0" }]).map((item, idx) => ({
-      itemId: Math.random().toString(36).substr(2, 9),
-      description: item.description || "",
-      quantity: Number(item.quantity) || 1,
-      unitPrice: { $numberDecimal: String(item.unitPrice || "0") },
-      taxes: { $numberDecimal: String(item.taxes || "0") },
-      totalPrice: { $numberDecimal: String(item.totalPrice || "0") },
-      discount: { $numberDecimal: "0" }
-    })),
-    attachments: [],
-    internalNotes: form.internalNotes || "",
-    supplierComments: form.supplierComments || "",
-    transportCost: { $numberDecimal: String(form.transportCost || "0") },
-    additionalCosts: [],
-    responsibleId: form.responsibleId || dummyObjectId(),
-    communicationHistory: [],
-    evaluationScore: { $numberDecimal: String(form.evaluationScore || "0") },
-    termsAccepted: !!form.termsAccepted,
-    competitivePosition: Number(form.competitivePosition) || 0,
-    lastReminder: null,
-    createdBy: "Usuario A",
-    updatedBy: "Usuario A",
-    updatedAt: new Date().toISOString(),
+    const DEFAULT_OBJECT_ID = "6650e2132321312312312312";
+
+    const newQuotation = {
+      ...form,
+      id: Math.random().toString(36).substr(2, 9),
+      quotationNumber:
+        form.quotationNumber || `Q-${Math.floor(Math.random() * 10000)}`,
+      quotationRequestId: validObjectId(form.quotationRequestId)
+        ? form.quotationRequestId
+        : DEFAULT_OBJECT_ID,
+      supplierId: validObjectId(form.supplierId)
+        ? form.supplierId
+        : DEFAULT_OBJECT_ID,
+      responsibleId: validObjectId(form.responsibleId)
+        ? form.responsibleId
+        : DEFAULT_OBJECT_ID,
+      supplierName: form.supplierName || "Proveedor X",
+      status: form.status || "Draft",
+      totalAmount: { $numberDecimal: String(form.totalAmount || "0") },
+      currency: form.currency || "USD",
+      deliveryTime: Number(form.deliveryTime) || 0,
+      deliveryTerms: form.deliveryTerms || "",
+      paymentTerms: form.paymentTerms || "",
+      validUntil: form.validUntil
+        ? new Date(form.validUntil).toISOString()
+        : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+      creationDate: new Date().toISOString(),
+      sentDate: null,
+      receivedDate: null,
+      reviewDate: null,
+      items: (items.length
+        ? items
+        : [
+            {
+              description: "",
+              quantity: 1,
+              unitPrice: "0",
+              taxes: "0",
+              totalPrice: "0",
+            },
+          ]
+      ).map((item, idx) => ({
+        itemId: Math.random().toString(36).substr(2, 9),
+        description: item.description || "",
+        quantity: Number(item.quantity) || 1,
+        unitPrice: { $numberDecimal: String(item.unitPrice || "0") },
+        taxes: { $numberDecimal: String(item.taxes || "0") },
+        totalPrice: { $numberDecimal: String(item.totalPrice || "0") },
+        discount: { $numberDecimal: "0" },
+      })),
+      attachments: [],
+      internalNotes: form.internalNotes || "",
+      supplierComments: form.supplierComments || "",
+      transportCost: { $numberDecimal: String(form.transportCost || "0") },
+      additionalCosts: [],
+      communicationHistory: [],
+      evaluationScore: { $numberDecimal: String(form.evaluationScore || "0") },
+      termsAccepted: !!form.termsAccepted,
+      competitivePosition: Number(form.competitivePosition) || 0,
+      lastReminder: null,
+      createdBy: "Usuario A",
+      updatedBy: "Usuario A",
+      updatedAt: new Date().toISOString(),
+    };
+
+    await onCreateQuotation(newQuotation);
+    setLoading(false);
+    setForm(initialState);
+    setItems([
+      {
+        description: "",
+        quantity: 1,
+        unitPrice: "",
+        taxes: "",
+        totalPrice: "",
+      },
+    ]);
+    onClose();
   };
-
-  await onCreateQuotation(newQuotation);
-  setLoading(false);
-  setForm(initialState);
-  setItems([{ description: "", quantity: 1, unitPrice: "", taxes: "", totalPrice: "" }]);
-  onClose();
-};
 
   return (
     <Modal show={show} onHide={onClose} centered size="lg">
@@ -168,8 +212,10 @@ const handleSubmit = async (e) => {
                   value={form.status}
                   onChange={handleChange}
                 >
-                  {statusOptions.map(opt => (
-                    <option key={opt} value={opt}>{opt}</option>
+                  {statusOptions.map((opt) => (
+                    <option key={opt} value={opt}>
+                      {opt}
+                    </option>
                   ))}
                 </Form.Select>
               </Form.Group>
@@ -197,8 +243,10 @@ const handleSubmit = async (e) => {
                   value={form.currency}
                   onChange={handleChange}
                 >
-                  {currencyOptions.map(opt => (
-                    <option key={opt} value={opt}>{opt}</option>
+                  {currencyOptions.map((opt) => (
+                    <option key={opt} value={opt}>
+                      {opt}
+                    </option>
                   ))}
                 </Form.Select>
               </Form.Group>
@@ -346,7 +394,7 @@ const handleSubmit = async (e) => {
                     type="text"
                     name="description"
                     value={item.description}
-                    onChange={e => handleItemChange(idx, e)}
+                    onChange={(e) => handleItemChange(idx, e)}
                     placeholder="Description"
                   />
                 </Form.Group>
@@ -359,7 +407,7 @@ const handleSubmit = async (e) => {
                     name="quantity"
                     min="1"
                     value={item.quantity}
-                    onChange={e => handleItemChange(idx, e)}
+                    onChange={(e) => handleItemChange(idx, e)}
                   />
                 </Form.Group>
               </Col>
@@ -372,7 +420,7 @@ const handleSubmit = async (e) => {
                     min="0"
                     step="0.01"
                     value={item.unitPrice}
-                    onChange={e => handleItemChange(idx, e)}
+                    onChange={(e) => handleItemChange(idx, e)}
                     placeholder="0.00"
                   />
                 </Form.Group>
@@ -386,7 +434,7 @@ const handleSubmit = async (e) => {
                     min="0"
                     step="0.01"
                     value={item.taxes}
-                    onChange={e => handleItemChange(idx, e)}
+                    onChange={(e) => handleItemChange(idx, e)}
                     placeholder="0.00"
                   />
                 </Form.Group>
@@ -400,19 +448,30 @@ const handleSubmit = async (e) => {
                     min="0"
                     step="0.01"
                     value={item.totalPrice}
-                    onChange={e => handleItemChange(idx, e)}
+                    onChange={(e) => handleItemChange(idx, e)}
                     placeholder="0.00"
                   />
                 </Form.Group>
               </Col>
               <Col md={1} className="d-flex align-items-end">
                 {items.length > 1 && (
-                  <Button variant="danger mt-1" size="sm" onClick={() => removeItem(idx)}><DeleteRoundedIcon /></Button>
+                  <Button
+                    variant="danger mt-1"
+                    size="sm"
+                    onClick={() => removeItem(idx)}
+                  >
+                    <DeleteRoundedIcon />
+                  </Button>
                 )}
               </Col>
             </Row>
           ))}
-          <Button variant="outline-primary" size="sm" onClick={addItem} style={{ marginBottom: 10 }}>
+          <Button
+            variant="outline-primary"
+            size="sm"
+            onClick={addItem}
+            style={{ marginBottom: 10 }}
+          >
             + Add Item
           </Button>
         </Modal.Body>
@@ -431,7 +490,8 @@ const handleSubmit = async (e) => {
             disabled={loading}
             style={{ borderRadius: "10px", fontWeight: "bold" }}
           >
-            <AddCircleOutlineIcon className="me-1" /> {loading ? "Saving..." : "Add Quotation"}
+            <AddCircleOutlineIcon className="me-1" />{" "}
+            {loading ? "Saving..." : "Add Quotation"}
           </Button>
         </Modal.Footer>
       </Form>

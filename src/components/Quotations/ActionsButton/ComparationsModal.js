@@ -456,6 +456,7 @@ const ComparisonModal = ({ open, onClose, quotations }) => {
     };
     window.addEventListener("exportComparison", handler);
     return () => window.removeEventListener("exportComparison", handler);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [quotations, weights]);
 
   return (

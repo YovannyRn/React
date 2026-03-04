@@ -51,7 +51,7 @@ const LandingPage = () => {
       });
 
       if (response.ok) {
-        const responseData = await response.text();
+        await response.text();
 
         setMessage(
           "¡Formulario enviado exitosamente! Recibirás un email pronto con el análisis de IA personalizado y un enlace para agendar una cita.",

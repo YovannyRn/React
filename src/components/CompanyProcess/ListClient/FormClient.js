@@ -197,6 +197,7 @@ const FormClient = () => {
       setLoadingClient(false);
     };
     loadClientData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clientId]);
 
   // UseEffect adicional para debug más agresivo

@@ -3,7 +3,6 @@ import {
   DndContext,
   DragOverlay,
   closestCenter,
-  useDraggable,
   useDroppable,
 } from "@dnd-kit/core";
 import {
@@ -69,7 +68,6 @@ const KanbanCompany = ({ companies = [], clients = [], onClientUpdate }) => {
     }, 5000);
   };
   useEffect(() => {
-
     // Función para mapear estados de la BD a estados del Kanban
     const mapStateToKanban = (estado) => {
       const stateMapping = {
@@ -129,7 +127,7 @@ const KanbanCompany = ({ companies = [], clients = [], onClientUpdate }) => {
       try {
         showNotification(
           `Actualizando estado de ${activeClient.nombre}...`,
-          "info"
+          "info",
         );
 
         const newStateForDB = mapKanbanToState(newStatus);
@@ -138,7 +136,7 @@ const KanbanCompany = ({ companies = [], clients = [], onClientUpdate }) => {
         const updatedClients = clients.map((client) =>
           (client._id || client.id) === active.id
             ? { ...client, estado_kanban: newStateForDB }
-            : client
+            : client,
         );
 
         // Reorganizar las columnas usando la misma función de mapeo
@@ -168,7 +166,7 @@ const KanbanCompany = ({ companies = [], clients = [], onClientUpdate }) => {
 
         showNotification(
           `✅ ${activeClient.nombre} movido a "${newStatus}"`,
-          "success"
+          "success",
         );
 
         // Log para n8n monitoring
@@ -182,7 +180,7 @@ const KanbanCompany = ({ companies = [], clients = [], onClientUpdate }) => {
         console.error("Error al actualizar estado:", error);
         showNotification(
           `❌ Error al actualizar ${activeClient.nombre}: ${error.message}`,
-          "error"
+          "error",
         );
       }
     }
@@ -228,8 +226,8 @@ const KanbanCompany = ({ companies = [], clients = [], onClientUpdate }) => {
               notification.type === "error"
                 ? "danger"
                 : notification.type === "info"
-                ? "info"
-                : "success"
+                  ? "info"
+                  : "success"
             }
             text={notification.type === "error" ? "white" : "dark"}
             delay={5000}
@@ -299,7 +297,7 @@ const KanbanColumn = ({
                 client={client}
                 isDraggable={true}
               />
-            )
+            ),
         )}
       </SortableContext>
     </div>
@@ -349,7 +347,7 @@ const KanbanCard = ({ id, client, isDraggable }) => {
           style={{ fontSize: "0.6rem" }}
         >
           F
-        </Badge>
+        </Badge>,
       );
     if (client.cita_agendada)
       badges.push(
@@ -360,7 +358,7 @@ const KanbanCard = ({ id, client, isDraggable }) => {
           style={{ fontSize: "0.6rem" }}
         >
           C
-        </Badge>
+        </Badge>,
       );
     if (client.factura_generada)
       badges.push(
@@ -371,7 +369,7 @@ const KanbanCard = ({ id, client, isDraggable }) => {
           style={{ fontSize: "0.6rem" }}
         >
           $
-        </Badge>
+        </Badge>,
       );
     if (client.proyecto_programado)
       badges.push(
@@ -382,7 +380,7 @@ const KanbanCard = ({ id, client, isDraggable }) => {
           style={{ fontSize: "0.6rem" }}
         >
           P
-        </Badge>
+        </Badge>,
       );
     return badges;
   };

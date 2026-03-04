@@ -35,7 +35,6 @@ function QuotationBody() {
   const [selectedQuotation, setSelectedQuotation] = useState(null);
   const [showModal, setShowModal] = useState(false);
   //botones de acciones
-  const [ActionsButton, setActionsButton] = useState(null);
   const [selectedRows, setSelectedRows] = useState([]);
   const [actionsAnchorEl, setActionsAnchorEl] = useState(null);
   // Estado para el botón de nueva cotización
@@ -333,7 +332,6 @@ function QuotationBody() {
         .map((q) => q.quotationNumber)
         .join(", ")}`,
     );
-    setActionsButton(null);
   };
   const handleStatusChange = (id, newStatus) => {
     setQuotations((prev) =>
