@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import "../quotations-responsive.css";
 import SearchIcon from "@mui/icons-material/Search";
 import TuneRoundedIcon from "@mui/icons-material/TuneRounded";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -458,29 +459,39 @@ function QuotationBody() {
   const activeFiltersCount = getActiveFiltersCount();
 
   return (
-    <div className="container mt-5">
-      <div className="d-flex justify-content-between align-items-center mt-1 mb-4">
-        <div className="position-relative w-25">
-          <input
-            type="text"
-            className="form-control ps-5"
-            placeholder="Search"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            style={{
-              borderRadius: "10px",
-              backgroundColor: "#f8f9fa",
-              border: "1px solid #ccc",
-            }}
-          />
-          <SearchIcon
-            className="position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"
-            style={{ fontSize: "1.5rem" }}
-          />
+    <div className="container-fluid px-3 px-md-5 mt-3 mt-md-4 quotation-main-wrapper">
+      <div className="quotation-toolbar d-flex flex-wrap justify-content-between align-items-center mt-1 mb-3 gap-2">
+        <div className="quotation-search">
+          <div className="input-group">
+            <span
+              className="input-group-text bg-light border-end-0"
+              style={{
+                borderRadius: "10px 0 0 10px",
+                border: "1px solid #ccc",
+              }}
+            >
+              <SearchIcon
+                className="text-muted"
+                style={{ fontSize: "1.2rem" }}
+              />
+            </span>
+            <input
+              type="text"
+              className="form-control border-start-0"
+              placeholder="Search"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              style={{
+                borderRadius: "0 10px 10px 0",
+                backgroundColor: "#f8f9fa",
+                border: "1px solid #ccc",
+              }}
+            />
+          </div>
         </div>
 
         {/* Botones */}
-        <div className="d-flex gap-2 align-items-center">
+        <div className="quotation-actions d-flex flex-wrap gap-2 align-items-center">
           <ActionsButtonQuotation
             anchorEl={actionsAnchorEl}
             setAnchorEl={setActionsAnchorEl}
@@ -502,7 +513,16 @@ function QuotationBody() {
             onClick={(e) => setAnchorEl(e.currentTarget)}
             endIcon={<KeyboardArrowDownIcon />}
           >
-            {viewMode === "table" ? "Table View" : "Kanban View"}
+            <span className="d-none d-sm-inline">
+              {viewMode === "table" ? "Table View" : "Kanban View"}
+            </span>
+            <span className="d-inline d-sm-none">
+              {viewMode === "table" ? (
+                <TableChartRoundedIcon fontSize="small" />
+              ) : (
+                <ViewKanbanRoundedIcon fontSize="small" />
+              )}
+            </span>
           </Button>
           <Menu
             className="mt-1"
@@ -531,18 +551,19 @@ function QuotationBody() {
             </MenuItem>
           </Menu>
           <Button
-            className="border-0 shadow-sm"
+            className="border-0 shadow-sm quotation-filter-btn"
             variant="outlined"
             style={{
               borderRadius: "10px",
               color: "rgb(47, 54, 53)",
               backgroundColor: "rgba(238, 238, 238, 0.84)",
               textTransform: "none",
+              position: "relative",
             }}
             startIcon={<TuneRoundedIcon />}
             onClick={() => setShowFilters(true)}
           >
-            Filter
+            <span className="d-none d-sm-inline">Filter</span>
             {activeFiltersCount > 0 && (
               <span
                 style={{
@@ -552,12 +573,12 @@ function QuotationBody() {
                   background: "red",
                   color: "white",
                   borderRadius: "50%",
-                  width: "22px",
-                  height: "22px",
+                  width: "20px",
+                  height: "20px",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  fontSize: "13px",
+                  fontSize: "11px",
                   fontWeight: "bold",
                   zIndex: 2,
                 }}
@@ -577,7 +598,7 @@ function QuotationBody() {
             startIcon={<PersonIcon />}
             onClick={() => setShowSupplierPortal(true)}
           >
-            Supplier Portal
+            <span className="d-none d-md-inline">Supplier Portal</span>
           </Button>
           <Button
             className="border-1 shadow-sm btn btn-outline-primary"
@@ -590,7 +611,8 @@ function QuotationBody() {
             startIcon={<AddCircleOutlineIcon />}
             onClick={() => setShowNewQuotation(true)}
           >
-            New Quotation
+            <span className="d-none d-sm-inline">New Quotation</span>
+            <span className="d-inline d-sm-none">New</span>
           </Button>
         </div>
       </div>
@@ -599,166 +621,197 @@ function QuotationBody() {
 
       {viewMode === "table" ? (
         <>
-          <table
-            className="table mx-auto"
-            style={{
-              borderCollapse: "separate",
-              borderSpacing: "0 8px",
-            }}
-          >
-            <thead
+          <div className="quotation-table-wrapper">
+            <table
+              className="table mx-auto"
               style={{
-                backgroundColor: "cian",
-                borderTopLeftRadius: "10px",
-                borderBottomLeftRadius: "10px",
-                "--bs-table-accent-bg": "rgba(178, 220, 255, 0.52)",
+                borderCollapse: "separate",
+                borderSpacing: "0 8px",
               }}
             >
-              <tr>
-                <th
-                  scope="col"
-                  style={{
-                    borderTopLeftRadius: "10px",
-                    borderBottomLeftRadius: "10px",
-                    paddingLeft: "20px",
-                  }}
-                >
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    checked={
-                      selectedRows.length === filteredQuotations.length &&
-                      filteredQuotations.length > 0
-                    }
-                    onChange={handleSelectAll}
-                  />
-                </th>
-                <th scope="col" style={{ padding: "10px" }}>
-                  Action
-                </th>
-                <th scope="col" style={{ padding: "10px" }}>
-                  Supplier
-                </th>
-                <th scope="col" style={{ padding: "10px" }}>
-                  Delivery Time
-                </th>
-                <th scope="col" style={{ padding: "10px" }}>
-                  Status
-                </th>
-                <th scope="col" style={{ padding: "10px" }}>
-                  Quotation
-                </th>
-                <th
-                  scope="col"
-                  style={{
-                    padding: "10px",
-                    borderTopRightRadius: "10px",
-                    borderBottomRightRadius: "10px",
-                  }}
-                >
-                  Payment Terms
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {paginatedQuotations.map((quotation, index) => (
-                <tr
-                  key={quotation.id}
-                  style={{
-                    "--bs-table-bg": "rgba(238, 238, 238, 0.84)",
-                    borderRadius: "10px",
-                  }}
-                >
-                  <td
+              <thead
+                style={{
+                  backgroundColor: "cian",
+                  borderTopLeftRadius: "10px",
+                  borderBottomLeftRadius: "10px",
+                  "--bs-table-accent-bg": "rgba(178, 220, 255, 0.52)",
+                }}
+              >
+                <tr>
+                  <th
+                    scope="col"
                     style={{
                       borderTopLeftRadius: "10px",
                       borderBottomLeftRadius: "10px",
-                      paddingTop: "14px",
                       paddingLeft: "20px",
                     }}
                   >
                     <input
                       className="form-check-input"
                       type="checkbox"
-                      checked={selectedRows.includes(quotation.id)}
-                      onChange={() => handleSelectRow(quotation.id)}
-                    />
-                  </td>
-                  <td>
-                    <span
-                      type="button"
-                      className=" ms-3 align-items-center d-flex"
-                      onClick={() => handleOpenModal(quotation)}
-                    >
-                      ...
-                    </span>
-                  </td>
-                  <td
-                    style={{ padding: "10px" }}
-                    className="d-flex align-items-center"
-                  >
-                    <img
-                      src={
-                        quotation.supplierImage ||
-                        `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                          quotation.supplierName || "S",
-                        )}&background=random&color=fff&bold=true&size=64`
+                      checked={
+                        selectedRows.length === filteredQuotations.length &&
+                        filteredQuotations.length > 0
                       }
-                      alt={quotation.supplierName || "Supplier"}
-                      className="rounded-circle me-2"
-                      style={{
-                        width: "36px",
-                        height: "36px",
-                        objectFit: "cover",
-                        border: "2px solid #dee2e6",
-                      }}
+                      onChange={handleSelectAll}
                     />
-                    {quotation.supplierName}
-                  </td>
-                  <td style={{ padding: "10px" }}>
-                    {quotation.deliveryTime} Days
-                  </td>
-                  <td style={{ padding: "10px" }}>
-                    <span
-                      className={`text-${
-                        quotation.status === "Accepted"
-                          ? "success"
-                          : quotation.status === "Under Review"
-                            ? "primary"
-                            : quotation.status === "Draft" ||
-                                quotation.status === "Sent" ||
-                                quotation.status === "Received"
-                              ? "warning"
-                              : quotation.status === "Rejected" ||
-                                  quotation.status === "Expired"
-                                ? "danger"
-                                : "secondary"
-                      }`}
-                    >
-                      ● {quotation.status}
-                    </span>
-                  </td>
-                  <td style={{ padding: "10px" }}>
-                    {quotation.totalAmount &&
-                    quotation.totalAmount.$numberDecimal
-                      ? `${quotation.currency} ${parseFloat(
-                          quotation.totalAmount.$numberDecimal,
-                        ).toFixed(2)}`
-                      : "N/A"}
-                  </td>
-                  <td
+                  </th>
+                  <th
+                    scope="col"
+                    style={{ padding: "10px" }}
+                    className="d-none d-md-table-cell"
+                  >
+                    Action
+                  </th>
+                  <th
+                    scope="col"
+                    style={{ padding: "10px", whiteSpace: "nowrap" }}
+                  >
+                    Supplier
+                  </th>
+                  <th
+                    scope="col"
+                    style={{ padding: "10px", whiteSpace: "nowrap" }}
+                    className="d-none d-sm-table-cell"
+                  >
+                    Delivery Time
+                  </th>
+                  <th
+                    scope="col"
+                    style={{ padding: "10px", whiteSpace: "nowrap" }}
+                  >
+                    Status
+                  </th>
+                  <th
+                    scope="col"
+                    style={{ padding: "10px", whiteSpace: "nowrap" }}
+                    className="quotation-amount-col"
+                  >
+                    Quotation
+                  </th>
+                  <th
+                    scope="col"
                     style={{
+                      padding: "10px",
+                      whiteSpace: "nowrap",
                       borderTopRightRadius: "10px",
                       borderBottomRightRadius: "10px",
-                      padding: "10px",
+                    }}
+                    className="d-none d-lg-table-cell"
+                  >
+                    Payment Terms
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {paginatedQuotations.map((quotation, index) => (
+                  <tr
+                    key={quotation.id}
+                    style={{
+                      "--bs-table-bg": "rgba(238, 238, 238, 0.84)",
+                      borderRadius: "10px",
                     }}
                   >
-                    {quotation.paymentTerms || "N/A"}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                    <td
+                      style={{
+                        borderTopLeftRadius: "10px",
+                        borderBottomLeftRadius: "10px",
+                        paddingTop: "14px",
+                        paddingLeft: "20px",
+                      }}
+                    >
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        checked={selectedRows.includes(quotation.id)}
+                        onChange={() => handleSelectRow(quotation.id)}
+                      />
+                    </td>
+                    <td className="d-none d-md-table-cell">
+                      <span
+                        type="button"
+                        className="ms-3 align-items-center d-flex"
+                        onClick={() => handleOpenModal(quotation)}
+                      >
+                        ...
+                      </span>
+                    </td>
+                    <td style={{ padding: "10px" }}>
+                      <div className="d-flex align-items-center">
+                        <img
+                          src={
+                            quotation.supplierImage ||
+                            `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                              quotation.supplierName || "S",
+                            )}&background=random&color=fff&bold=true&size=64`
+                          }
+                          alt={quotation.supplierName || "Supplier"}
+                          className="rounded-circle me-2"
+                          style={{
+                            width: "36px",
+                            height: "36px",
+                            objectFit: "cover",
+                            border: "2px solid #dee2e6",
+                          }}
+                        />
+                        <span style={{ whiteSpace: "nowrap" }}>
+                          {quotation.supplierName}
+                        </span>
+                      </div>
+                    </td>
+                    <td
+                      style={{ padding: "10px", whiteSpace: "nowrap" }}
+                      className="d-none d-sm-table-cell"
+                    >
+                      {quotation.deliveryTime} Days
+                    </td>
+                    <td style={{ padding: "10px", whiteSpace: "nowrap" }}>
+                      <span
+                        className={`text-${
+                          quotation.status === "Accepted"
+                            ? "success"
+                            : quotation.status === "Under Review"
+                              ? "primary"
+                              : quotation.status === "Draft" ||
+                                  quotation.status === "Sent" ||
+                                  quotation.status === "Received"
+                                ? "warning"
+                                : quotation.status === "Rejected" ||
+                                    quotation.status === "Expired"
+                                  ? "danger"
+                                  : "secondary"
+                        }`}
+                      >
+                        ● {quotation.status}
+                      </span>
+                    </td>
+                    <td
+                      style={{ padding: "10px", whiteSpace: "nowrap" }}
+                      className="quotation-amount-col"
+                    >
+                      {quotation.totalAmount &&
+                      quotation.totalAmount.$numberDecimal
+                        ? `${quotation.currency} ${parseFloat(
+                            quotation.totalAmount.$numberDecimal,
+                          ).toFixed(2)}`
+                        : "N/A"}
+                    </td>
+                    <td
+                      style={{
+                        borderTopRightRadius: "10px",
+                        borderBottomRightRadius: "10px",
+                        padding: "10px",
+                        whiteSpace: "nowrap",
+                      }}
+                      className="d-none d-lg-table-cell"
+                    >
+                      {quotation.paymentTerms || "N/A"}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
           {/* Paginación */}
           <div className="d-flex justify-content-center my-4">
             <Stack spacing={2}>

@@ -4,6 +4,10 @@ import {
   closestCenter,
   useDroppable,
   DragOverlay,
+  useSensors,
+  useSensor,
+  PointerSensor,
+  TouchSensor,
 } from "@dnd-kit/core";
 import {
   SortableContext,
@@ -26,6 +30,16 @@ const stages = [
 const QuotationKanban = ({ quotations = [] }) => {
   const [columns, setColumns] = useState({});
   const [activeCard, setActiveCard] = useState(null);
+
+  // Sensores: ratón/mouse con distancia mínima + toque táctil con delay
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: { distance: 8 },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: { delay: 200, tolerance: 8 },
+    }),
+  );
 
   useEffect(() => {
     const grouped = stages.reduce((acc, stage) => {
@@ -121,11 +135,12 @@ const QuotationKanban = ({ quotations = [] }) => {
 
   return (
     <DndContext
+      sensors={sensors}
       collisionDetection={closestCenter}
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
-      <div className="d-flex flex-row overflow-auto mt-0">
+      <div className="quotation-kanban-wrapper d-flex flex-row mt-0">
         {stages.map((stage) => (
           <KanbanColumn
             key={stage.id}
@@ -210,6 +225,7 @@ const KanbanCard = ({ id, quotation, isDraggable }) => {
     transition,
     opacity: isDraggable ? 1 : 0.7,
     cursor: isDraggable ? "grab" : "not-allowed",
+    touchAction: isDraggable ? "none" : undefined,
   };
 
   return (

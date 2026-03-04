@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import "../company-responsive.css";
 import {
   Container,
   Row,
@@ -108,7 +109,9 @@ function CompanyBody() {
           client.servicio_interes
             ?.toLowerCase()
             .includes(searchTerm.toLowerCase()) ||
-          client.estado_kanban?.toLowerCase().includes(searchTerm.toLowerCase())
+          client.estado_kanban
+            ?.toLowerCase()
+            .includes(searchTerm.toLowerCase()),
       );
       setFilteredClients(filtered);
     }
@@ -116,7 +119,7 @@ function CompanyBody() {
 
   const handleSelectRow = (id) => {
     setSelectedRows((prev) =>
-      prev.includes(id) ? prev.filter((rowId) => rowId !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((rowId) => rowId !== id) : [...prev, id],
     );
   };
 
@@ -133,13 +136,13 @@ function CompanyBody() {
     try {
       await clientProcessService.deleteClient(id);
       setClients((prev) =>
-        prev.filter((client) => (client._id || client.id) !== id)
+        prev.filter((client) => (client._id || client.id) !== id),
       );
     } catch (error) {
       console.error("Error deleting client:", error);
       // Para desarrollo, eliminar del estado local
       setClients((prev) =>
-        prev.filter((client) => (client._id || client.id) !== id)
+        prev.filter((client) => (client._id || client.id) !== id),
       );
     }
   };
@@ -155,7 +158,7 @@ function CompanyBody() {
   const totalPages = Math.ceil(totalRows / rowsPerPage);
   const paginatedClients = filteredClients.slice(
     (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
+    currentPage * rowsPerPage,
   );
 
   // Reiniciar página cuando cambian los filtros
@@ -185,25 +188,25 @@ function CompanyBody() {
       badges.push(
         <span key="form" className="badge bg-success me-1">
           Form
-        </span>
+        </span>,
       );
     if (client.cita_agendada)
       badges.push(
         <span key="cita" className="badge bg-info me-1">
           Cita
-        </span>
+        </span>,
       );
     if (client.factura_generada)
       badges.push(
         <span key="factura" className="badge bg-warning me-1">
           Factura
-        </span>
+        </span>,
       );
     if (client.proyecto_programado)
       badges.push(
         <span key="proyecto" className="badge bg-primary me-1">
           Proyecto
-        </span>
+        </span>,
       );
     return badges.length > 0 ? (
       badges
@@ -213,29 +216,32 @@ function CompanyBody() {
   };
 
   return (
-    <Container fluid className="mt-5">
+    <Container fluid className="mt-3 mt-md-5 px-2 px-md-4">
       <Row className="mb-3">
         <Col>
-          <Card>
+          <Card className="shadow-sm border-0">
             {" "}
-            <Card.Header className="d-flex justify-content-between align-items-center">
-              <h5 className="mb-0">Gestión de Clientes por Empresa</h5>
-              <div className="d-flex align-items-center gap-3">
+            <Card.Header className="company-card-header bg-white border-bottom">
+              <h5 className="mb-0 fw-bold text-dark">
+                Gestión de Clientes por Empresa
+              </h5>
+              <div className="company-header-actions">
                 <Button
                   variant="success"
                   size="sm"
                   onClick={() => setShowNewClientModal(true)}
                   className="d-flex align-items-center"
                 >
-                  <FaPlus className="me-2" />
-                  Agregar Cliente
+                  <FaPlus className="me-1" />
+                  <span className="d-none d-sm-inline">Agregar Cliente</span>
+                  <span className="d-inline d-sm-none">Nuevo</span>
                 </Button>
                 <Form.Control
                   type="text"
                   placeholder="Buscar clientes..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  style={{ width: "250px" }}
+                  className="company-search-input"
                 />
                 <ButtonGroup size="sm">
                   <Button
@@ -243,18 +249,20 @@ function CompanyBody() {
                       viewMode === "table" ? "primary" : "outline-primary"
                     }
                     onClick={() => setViewMode("table")}
+                    title="Vista tabla"
                   >
-                    <FaTable className="me-1" />
-                    Tabla
+                    <FaTable />
+                    <span className="d-none d-sm-inline ms-1">Tabla</span>
                   </Button>
                   <Button
                     variant={
                       viewMode === "kanban" ? "primary" : "outline-primary"
                     }
                     onClick={() => setViewMode("kanban")}
+                    title="Vista Kanban"
                   >
-                    <FaThLarge className="me-1" />
-                    Kanban
+                    <FaThLarge />
+                    <span className="d-none d-sm-inline ms-1">Kanban</span>
                   </Button>
                 </ButtonGroup>
               </div>
@@ -262,100 +270,105 @@ function CompanyBody() {
             <Card.Body className="p-0">
               {viewMode === "table" ? (
                 <>
-                  <Table responsive hover className="mb-0">
-                    <thead className="table-light">
-                      <tr>
-                        <th width="40">
-                          <Form.Check
-                            type="checkbox"
-                            onChange={handleSelectAll}
-                            checked={
-                              selectedRows.length === paginatedClients.length &&
-                              paginatedClients.length > 0
-                            }
-                          />
-                        </th>
-                        <th>Cliente</th>
-                        <th>Email</th>
-                        <th>Teléfono</th>
-                        <th>Empresa</th>
-                        <th>Servicio</th>
-                        <th>Estado Kanban</th>
-                        <th>Progreso</th>
-                        <th>Fecha Registro</th>
-                        <th width="120">Acciones</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {paginatedClients.map((client) => (
-                        <tr key={client._id || client.id}>
-                          <td>
+                  <div className="company-table-wrapper">
+                    <Table responsive hover className="mb-0">
+                      <thead className="table-light">
+                        <tr>
+                          <th width="40">
                             <Form.Check
                               type="checkbox"
-                              checked={selectedRows.includes(
-                                client._id || client.id
-                              )}
-                              onChange={() =>
-                                handleSelectRow(client._id || client.id)
+                              onChange={handleSelectAll}
+                              checked={
+                                selectedRows.length ===
+                                  paginatedClients.length &&
+                                paginatedClients.length > 0
                               }
                             />
-                          </td>
-                          <td className="fw-bold">{client.nombre}</td>
-                          <td>{client.email}</td>
-                          <td>{client.telefono}</td>
-                          <td>{client.empresa}</td>
-                          <td>
-                            <span className="badge bg-light text-dark">
-                              {client.servicio_interes}
-                            </span>
-                          </td>
-                          <td>{getStatusBadge(client.estado_kanban)}</td>
-                          <td>{getCompletionBadges(client)}</td>
-                          <td>
-                            {new Date(
-                              client.fecha_registro
-                            ).toLocaleDateString()}
-                          </td>
-                          <td>
-                            <div className="d-flex gap-1">
-                              <Button
-                                size="sm"
-                                variant="outline-info"
-                                title="Ver"
-                              >
-                                <FaEye />
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="outline-warning"
-                                title="Editar"
-                              >
-                                <FaEdit />
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="outline-danger"
-                                title="Eliminar"
-                                onClick={() =>
-                                  handleDeleteClient(client._id || client.id)
-                                }
-                              >
-                                <FaTrash />
-                              </Button>
-                            </div>
-                          </td>
+                          </th>
+                          <th>Cliente</th>
+                          <th className="hide-mobile">Email</th>
+                          <th className="hide-mobile">Teléfono</th>
+                          <th>Empresa</th>
+                          <th>Servicio</th>
+                          <th>Estado</th>
+                          <th className="hide-mobile">Progreso</th>
+                          <th className="hide-mobile">Fecha Reg.</th>
+                          <th width="100">Acciones</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </Table>
+                      </thead>
+                      <tbody>
+                        {paginatedClients.map((client) => (
+                          <tr key={client._id || client.id}>
+                            <td>
+                              <Form.Check
+                                type="checkbox"
+                                checked={selectedRows.includes(
+                                  client._id || client.id,
+                                )}
+                                onChange={() =>
+                                  handleSelectRow(client._id || client.id)
+                                }
+                              />
+                            </td>
+                            <td className="fw-bold">{client.nombre}</td>
+                            <td className="hide-mobile">{client.email}</td>
+                            <td className="hide-mobile">{client.telefono}</td>
+                            <td>{client.empresa}</td>
+                            <td>
+                              <span className="badge bg-light text-dark">
+                                {client.servicio_interes}
+                              </span>
+                            </td>
+                            <td>{getStatusBadge(client.estado_kanban)}</td>
+                            <td className="hide-mobile">
+                              {getCompletionBadges(client)}
+                            </td>
+                            <td className="hide-mobile">
+                              {new Date(
+                                client.fecha_registro,
+                              ).toLocaleDateString()}
+                            </td>
+                            <td>
+                              <div className="d-flex gap-1">
+                                <Button
+                                  size="sm"
+                                  variant="outline-info"
+                                  title="Ver"
+                                >
+                                  <FaEye />
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline-warning"
+                                  title="Editar"
+                                >
+                                  <FaEdit />
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline-danger"
+                                  title="Eliminar"
+                                  onClick={() =>
+                                    handleDeleteClient(client._id || client.id)
+                                  }
+                                >
+                                  <FaTrash />
+                                </Button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </Table>
+                  </div>
                   {totalPages > 1 && (
-                    <div className="d-flex justify-content-between align-items-center p-3 border-top">
-                      <div className="text-muted">
+                    <div className="company-pagination">
+                      <div className="page-info">
                         Mostrando {(currentPage - 1) * rowsPerPage + 1} a{" "}
                         {Math.min(currentPage * rowsPerPage, totalRows)} de{" "}
                         {totalRows} clientes
                       </div>
-                      <div className="d-flex gap-1">
+                      <div className="page-buttons">
                         <Button
                           size="sm"
                           variant="outline-primary"

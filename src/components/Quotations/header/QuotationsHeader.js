@@ -1,66 +1,111 @@
-import React from "react";
+import React, { useState } from "react";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import PeopleOutlineIcon from "@mui/icons-material/PeopleOutline";
 import DehazeIcon from "@mui/icons-material/Dehaze";
 import SearchIcon from "@mui/icons-material/Search";
 
 const QuotationsHeader = () => {
+  const [searchOpen, setSearchOpen] = useState(false);
+
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light px-3">
-      <div className="container-fluid d-flex align-items-center">
-        <div className="d-flex align-items-center justify-content-start">
+    <nav
+      className="navbar navbar-light bg-light px-3 px-md-4 border-bottom"
+      style={{ minHeight: "56px" }}
+    >
+      <div className="container-fluid d-flex align-items-center gap-2">
+        {/* Logo */}
+        <div className="d-flex align-items-center flex-shrink-0">
           <DehazeIcon
-            className="text-muted me-3"
-            style={{ fontSize: "1.5rem" }}
+            className="text-muted me-2"
+            style={{ fontSize: "1.4rem", cursor: "pointer" }}
           />
-          <span className="navbar-brand mb-0 h1">MediCore</span>
+          <span
+            className="navbar-brand mb-0 fw-bold"
+            style={{ fontSize: "1.1rem" }}
+          >
+            MediCore
+          </span>
         </div>
 
-        <div className="flex-grow-1 mx-5">
-          <div className="position-relative w-50">
+        {/* Buscador desktop: visible desde md */}
+        <div className="d-none d-md-flex flex-grow-1 mx-3 mx-lg-5 position-relative">
+          <input
+            type="text"
+            className="form-control ps-5 bg-light"
+            placeholder="Search"
+            style={{
+              borderRadius: "20px",
+              border: "1px solid #ccc",
+              maxWidth: "500px",
+              width: "100%",
+            }}
+          />
+          <SearchIcon
+            className="text-muted position-absolute top-50 translate-middle-y"
+            style={{ fontSize: "1.3rem", left: "14px" }}
+          />
+        </div>
+
+        {/* Spacer para empujar iconos a la derecha en desktop */}
+        <div className="d-md-none flex-grow-1" />
+
+        {/* Buscador móvil expandible */}
+        {searchOpen && (
+          <div className="d-md-none position-relative flex-grow-1">
             <input
               type="text"
-              className="form-control w-100 ps-5 bg-light"
+              className="form-control ps-5 bg-light"
               placeholder="Search"
-              style={{
-                borderRadius: "10px",
-                backgroundColor: "#f5f5dc !important",
-                border: "1px solid #ccc",
-              }}
+              autoFocus
+              style={{ borderRadius: "20px", border: "1px solid #ccc" }}
             />
             <SearchIcon
-              className="text-muted position-absolute top-50 end-0 translate-middle-y me-3"
-              style={{ fontSize: "1.5rem" }}
+              className="text-muted position-absolute top-50 translate-middle-y"
+              style={{ fontSize: "1.3rem", left: "14px" }}
             />
           </div>
-        </div>
+        )}
 
-        <div className="btn btn-link text-decoration-none">
-          <PeopleOutlineIcon
-            className="text-muted"
-            style={{ fontSize: "1.5rem" }}
-          />
-        </div>
+        {/* Icono lupa en móvil */}
+        <button
+          className="d-flex d-md-none btn btn-link text-muted p-1"
+          onClick={() => setSearchOpen(!searchOpen)}
+          title="Buscar"
+        >
+          <SearchIcon style={{ fontSize: "1.4rem" }} />
+        </button>
 
-        <div className="btn btn-link text-decoration-none">
-          <NotificationsNoneIcon
-            className="text-muted"
-            style={{ fontSize: "1.5rem" }}
-          />
-        </div>
+        {/* Iconos de la derecha */}
+        <div className="d-flex align-items-center gap-1 flex-shrink-0">
+          <button className="btn btn-link text-muted p-1" title="Usuarios">
+            <PeopleOutlineIcon style={{ fontSize: "1.4rem" }} />
+          </button>
+          <button
+            className="btn btn-link text-muted p-1"
+            title="Notificaciones"
+          >
+            <NotificationsNoneIcon style={{ fontSize: "1.4rem" }} />
+          </button>
 
-        <div className="d-flex align-items-center">
-          <i className="bi bi-people fs-5 me-3"></i>
-          <i className="bi bi-bell fs-5 me-3"></i>
-
-          <div className="d-flex align-items-center">
-            <span className="me-5">HELLO {/* User Name */}</span>
-            <img
-              src=""
-              alt="User"
-              className="rounded-circle me-2"
-              style={{ width: "30px", height: "30px" }}
-            />
+          {/* Usuario */}
+          <div className="d-flex align-items-center ms-1 gap-2">
+            <span
+              className="d-none d-sm-inline fw-semibold text-dark"
+              style={{ fontSize: "0.9rem", letterSpacing: "0.03em" }}
+            >
+              HELLO
+            </span>
+            <div
+              className="rounded-circle bg-success d-flex align-items-center justify-content-center text-white"
+              style={{
+                width: "32px",
+                height: "32px",
+                fontSize: "0.75rem",
+                fontWeight: 700,
+              }}
+            >
+              U
+            </div>
           </div>
         </div>
       </div>

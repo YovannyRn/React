@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import "../company-responsive.css";
 import {
   DndContext,
   DragOverlay,
@@ -10,7 +11,7 @@ import {
   useSortable,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { Card, Badge, Button, Toast, ToastContainer } from "react-bootstrap";
+import { Badge, Button, Toast, ToastContainer } from "react-bootstrap";
 import {
   FaBuilding,
   FaUser,
@@ -192,7 +193,7 @@ const KanbanCompany = ({ companies = [], clients = [], onClientUpdate }) => {
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       >
-        <div className="d-flex flex-row overflow-auto mt-0">
+        <div className="kanban-company-container">
           {stages.map((stage) => (
             <KanbanColumn
               key={stage.id}
@@ -256,31 +257,24 @@ const KanbanColumn = ({
   return (
     <div
       ref={setNodeRef}
+      className="kanban-col"
       style={{
-        minWidth: "214px",
-        maxWidth: "260px",
-        minHeight: "550px",
-        maxHeight: "70vh",
-        flex: "1",
-        background: isOver ? "#e3f2fd" : "transparent",
+        background: isOver ? "#e3f2fd" : undefined,
         transition: "background 0.2s",
         opacity: loading ? 0.7 : 1,
       }}
     >
-      <div
-        className="mb-2 p-2 m-2 rounded d-flex flex-column"
-        style={{ backgroundColor: "rgba(178, 220, 255, 0.52)" }}
-      >
-        <div className="d-flex align-items-center mb-1">
-          <FolderOutlinedIcon className="me-2" />
-          <h6 className="mb-0 flex-grow-1">{title}</h6>
-          <Badge bg="secondary">{clients.length}</Badge>
+      <div className="kanban-col-header">
+        <div className="d-flex align-items-center">
+          <FolderOutlinedIcon
+            style={{ fontSize: "1rem", marginRight: "6px", color: "#6c757d" }}
+          />
+          <span className="col-title flex-grow-1">{title}</span>
+          <Badge bg="secondary" style={{ fontSize: "0.7rem" }}>
+            {clients.length}
+          </Badge>
         </div>
-        {description && (
-          <small className="text-muted" style={{ fontSize: "0.7rem" }}>
-            {description}
-          </small>
-        )}
+        {description && <div className="col-desc">{description}</div>}
       </div>
       <SortableContext
         items={clients.map((c) => c._id || c.id)}
@@ -391,95 +385,88 @@ const KanbanCard = ({ id, client, isDraggable }) => {
       style={style}
       {...attributes}
       {...listeners}
-      className="mb-2 mx-2"
+      className="kanban-client-card"
     >
-      <Card className="shadow-sm border-0" style={{ fontSize: "0.85rem" }}>
-        <Card.Body className="p-3">
-          {/* Header con nombre del cliente */}
-          <div className="d-flex align-items-center mb-2">
-            <FaUser className="text-primary me-2" />
-            <h6 className="mb-0 fw-bold text-truncate">{client.nombre}</h6>
-          </div>
+      {/* Header con nombre del cliente */}
+      <div className="d-flex align-items-center mb-2">
+        <FaUser
+          className="text-primary me-2 flex-shrink-0"
+          style={{ fontSize: "0.85rem" }}
+        />
+        <span className="client-name text-truncate">{client.nombre}</span>
+      </div>
 
-          {/* Información de contacto */}
-          <div className="mb-2">
-            <div className="d-flex align-items-center mb-1">
-              <FaBuilding className="text-muted me-2" size="0.8rem" />
-              <small className="text-muted">
-                {client.empresa || "Sin empresa"}
-              </small>
-            </div>
-            <div className="d-flex align-items-center mb-1">
-              <FaEnvelope className="text-muted me-2" size="0.8rem" />
-              <small className="text-muted text-truncate">{client.email}</small>
-            </div>
-            <div className="d-flex align-items-center">
-              <FaPhone className="text-muted me-2" size="0.8rem" />
-              <small className="text-muted">
-                {client.telefono || "Sin teléfono"}
-              </small>
-            </div>
-          </div>
+      {/* Información de empresa y email */}
+      <div className="client-info">
+        <FaBuilding className="text-muted" style={{ fontSize: "0.7rem" }} />
+        <span className="text-truncate">{client.empresa || "Sin empresa"}</span>
+      </div>
+      <div className="client-info">
+        <FaEnvelope className="text-muted" style={{ fontSize: "0.7rem" }} />
+        <span className="text-truncate">{client.email}</span>
+      </div>
+      {client.telefono && (
+        <div className="client-info">
+          <FaPhone className="text-muted" style={{ fontSize: "0.7rem" }} />
+          <span>{client.telefono}</span>
+        </div>
+      )}
 
-          {/* Servicio de interés */}
-          <div className="mb-2">
-            <Badge bg="light" text="dark" className="w-100">
-              {client.servicio_interes}
-            </Badge>
-          </div>
+      {/* Servicio de interés */}
+      <div className="my-2">
+        <Badge
+          bg="light"
+          text="dark"
+          style={{
+            fontSize: "0.72rem",
+            display: "block",
+            textAlign: "left",
+            whiteSpace: "normal",
+          }}
+        >
+          {client.servicio_interes}
+        </Badge>
+      </div>
 
-          {/* Estado y progreso */}
-          <div className="d-flex flex-wrap align-items-center gap-1 mb-2">
-            {getStatusBadge(client.estado_kanban)}
-            <div className="d-flex">{getCompletionBadges(client)}</div>
-          </div>
+      {/* Estado y progreso */}
+      <div className="d-flex flex-wrap align-items-center gap-1 mb-2">
+        {getStatusBadge(client.estado_kanban)}
+        <div className="d-flex">{getCompletionBadges(client)}</div>
+      </div>
 
-          {/* Detalle IA si existe */}
-          {client.detalle_ia && (
-            <div className="mb-2">
-              <small className="text-muted" style={{ fontSize: "0.7rem" }}>
-                {client.detalle_ia.length > 50
-                  ? `${client.detalle_ia.substring(0, 50)}...`
-                  : client.detalle_ia}
-              </small>
-            </div>
-          )}
+      {/* Detalle IA si existe */}
+      {client.detalle_ia && (
+        <div className="mb-2">
+          <small
+            className="text-muted"
+            style={{ fontSize: "0.7rem", lineHeight: 1.3 }}
+          >
+            {client.detalle_ia.length > 60
+              ? `${client.detalle_ia.substring(0, 60)}...`
+              : client.detalle_ia}
+          </small>
+        </div>
+      )}
 
-          {/* Fecha */}
-          <div className="mb-2">
-            <small className="text-muted">
-              Registro: {new Date(client.fecha_registro).toLocaleDateString()}
-            </small>
-          </div>
+      {/* Fecha */}
+      <div className="mb-2">
+        <small className="text-muted" style={{ fontSize: "0.7rem" }}>
+          {new Date(client.fecha_registro).toLocaleDateString()}
+        </small>
+      </div>
 
-          {/* Enlaces si existen */}
-          <div className="mb-2 d-flex gap-1">
-            {client.enlace_pdf && (
-              <Badge bg="secondary" style={{ fontSize: "0.6rem" }}>
-                PDF
-              </Badge>
-            )}
-            {client.enlace_calendly && (
-              <Badge bg="info" style={{ fontSize: "0.6rem" }}>
-                CAL
-              </Badge>
-            )}
-          </div>
-
-          {/* Botones de acción */}
-          <div className="d-flex justify-content-end gap-1">
-            <Button size="sm" variant="outline-info" title="Ver">
-              <FaEye size="0.8rem" />
-            </Button>
-            <Button size="sm" variant="outline-warning" title="Editar">
-              <FaEdit size="0.8rem" />
-            </Button>
-            <Button size="sm" variant="outline-danger" title="Eliminar">
-              <FaTrash size="0.8rem" />
-            </Button>
-          </div>
-        </Card.Body>
-      </Card>
+      {/* Botones de acción */}
+      <div className="client-actions">
+        <Button size="sm" variant="outline-info" title="Ver">
+          <FaEye style={{ fontSize: "0.75rem" }} />
+        </Button>
+        <Button size="sm" variant="outline-warning" title="Editar">
+          <FaEdit style={{ fontSize: "0.75rem" }} />
+        </Button>
+        <Button size="sm" variant="outline-danger" title="Eliminar">
+          <FaTrash style={{ fontSize: "0.75rem" }} />
+        </Button>
+      </div>
     </div>
   );
 };
